@@ -47,7 +47,7 @@ class EventCfg:
         func=omy_stack_events.set_default_joint_pose,
         mode="startup",
         params={
-            "default_pose": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            "default_pose": [0.0, -1.55, 2.66, -1.1, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0],
         },
     )
 
