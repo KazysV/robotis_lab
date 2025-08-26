@@ -54,12 +54,6 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
     # end-effector sensor: will be populated by agent env cfg
     ee_frame: FrameTransformerCfg = MISSING
 
-    # Table
-    # table = AssetBaseCfg(
-    #     prim_path="{ENV_REGEX_NS}/Table",
-    #     init_state=OMY_TABLE_CFG.init_state,
-    #     spawn=OMY_TABLE_CFG.spawn,
-    # )
     table: AssetBaseCfg = MISSING
 
     robot_cam: CameraCfg = MISSING
@@ -132,7 +126,7 @@ class ObservationsCfg:
             params={
                 "robot_cfg": SceneEntityCfg("robot"),
                 "ee_frame_cfg": SceneEntityCfg("ee_frame"),
-                "object_cfg": SceneEntityCfg("cube"),
+                "object_cfg": SceneEntityCfg("bottle"),
             },
         )
 
@@ -152,12 +146,9 @@ class TerminationsCfg:
 
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
 
-    cube_dropping = DoneTerm(
-        func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("cube")}
+    bottle_dropping = DoneTerm(
+        func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("bottle")}
     )
-
-    # success = DoneTerm(func=mdp.cubes_stacked)
-
 
 @configclass
 class StackEnvCfg(ManagerBasedRLEnvCfg):

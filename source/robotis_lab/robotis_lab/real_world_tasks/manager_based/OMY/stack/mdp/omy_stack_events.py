@@ -29,6 +29,10 @@ from typing import TYPE_CHECKING
 import isaaclab.utils.math as math_utils
 from isaaclab.assets import Articulation, AssetBase
 from isaaclab.managers import SceneEntityCfg
+from typing import Literal
+
+from pxr import Gf
+import random
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedEnv
@@ -199,3 +203,81 @@ def randomize_rigid_objects_in_focus(
             )
 
         env.rigid_objects_in_focus.append(selected_ids)
+
+def randomize_scene_lighting_domelight(
+    env: ManagerBasedEnv,
+    env_ids: torch.Tensor,
+    intensity_range: tuple[float, float] = (1000.0, 3000.0),
+    color_range: tuple[tuple[float, float], tuple[float, float], tuple[float, float]] = ((0.5, 1.0), (0.5, 1.0), (0.5, 1.0)),
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("light"),
+):
+    asset: AssetBase = env.scene[asset_cfg.name]
+    light_prim = asset.prims[0]
+
+    # Random intensity
+    new_intensity = random.uniform(intensity_range[0], intensity_range[1])
+    intensity_attr = light_prim.GetAttribute("inputs:intensity")
+    intensity_attr.Set(new_intensity)
+
+    # Random color
+    new_color = Gf.Vec3f(
+        random.uniform(color_range[0][0], color_range[0][1]),
+        random.uniform(color_range[1][0], color_range[1][1]),
+        random.uniform(color_range[2][0], color_range[2][1]),
+    )
+    color_attr = light_prim.GetAttribute("inputs:color")
+    color_attr.Set(new_color)
+
+def randomize_camera_pose(
+    env: ManagerBasedEnv,
+    env_ids: torch.Tensor,
+    asset_cfg: SceneEntityCfg,
+    pose_range: dict[str, tuple[float, float]] = None,
+    convention: Literal["opengl", "ros", "world"] = "ros",
+):
+    """Reset the camera to a random position and rotation within the given ranges."""
+    if pose_range is None:
+        pose_range = {
+            "x": (-0.02, 0.02),
+            "y": (-0.02, 0.02),
+            "z": (-0.02, 0.02),
+            "roll": (-0.1, 0.1),
+            "pitch": (-0.1, 0.1),
+            "yaw": (-0.1, 0.1),
+        }
+
+    asset: Camera = env.scene[asset_cfg.name]
+
+    # Store the camera's initial position and quaternion once and reuse
+    if not hasattr(asset, "_initial_pos_w"):
+        asset._initial_pos_w = asset.data.pos_w.clone()
+        asset._initial_quat_w_ros = asset.data.quat_w_ros.clone()
+        asset._initial_quat_w_opengl = asset.data.quat_w_opengl.clone()
+        asset._initial_quat_w_world = asset.data.quat_w_world.clone()
+
+    # Use the stored initial position and quaternion
+    ori_pos_w = asset._initial_pos_w
+    if convention == "ros":
+        ori_quat_w = asset._initial_quat_w_ros
+    elif convention == "opengl":
+        ori_quat_w = asset._initial_quat_w_opengl
+    elif convention == "world":
+        ori_quat_w = asset._initial_quat_w_world
+
+    # Get range for each axis
+    range_list = [pose_range.get(k, (0.0, 0.0)) for k in ["x", "y", "z", "roll", "pitch", "yaw"]]
+    ranges = torch.tensor(range_list, device=asset.device)
+    rand_samples = math_utils.sample_uniform(
+        ranges[:, 0], ranges[:, 1], (len(env_ids), 6), device=asset.device
+    )
+
+    # Compute new positions and rotations
+    positions = ori_pos_w[:, 0:3] + rand_samples[:, 0:3]
+    orientations_delta = math_utils.quat_from_euler_xyz(
+        rand_samples[:, 3], rand_samples[:, 4], rand_samples[:, 5]
+    )
+    orientations = math_utils.quat_mul(ori_quat_w, orientations_delta)
+
+    # Apply to camera
+    asset.set_world_poses(positions, orientations, env_ids, convention)
+

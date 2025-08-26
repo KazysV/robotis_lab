@@ -7,10 +7,9 @@ PLASTIC_BOTTLE_CFG = RigidObjectCfg(
     spawn=sim_utils.UsdFileCfg(
         usd_path=f"{ROBOTIS_LAB_OBJECT_ASSETS_DATA_DIR}/object/plastic_bottle.usd",
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
-            mass=0.05,
             disable_gravity=False,
-            linear_damping=0.5,
-            angular_damping=0.5,
+            linear_damping=5.0,
+            angular_damping=5.0,
         ),
         activate_contact_sensors=False,
     ),

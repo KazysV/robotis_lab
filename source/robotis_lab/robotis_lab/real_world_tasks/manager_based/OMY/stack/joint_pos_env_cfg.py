@@ -40,6 +40,7 @@ from robotis_lab.real_world_tasks.manager_based.OMY.stack.stack_env_cfg import S
 from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
 from robotis_lab.assets.robots.OMY import OMY_CFG  # isort: skip
 from robotis_lab.assets.object.robotis_omy_table import OMY_TABLE_CFG
+from robotis_lab.assets.object.plastic_bottle import PLASTIC_BOTTLE_CFG
 
 @configclass
 class EventCfg:
@@ -63,19 +64,45 @@ class EventCfg:
         },
     )
 
-    randomize_cube_positions = EventTerm(
+    randomize_bottle_positions = EventTerm(
         func=omy_stack_events.randomize_object_pose,
         mode="reset",
         params={
-            "pose_range": {"x": (0.3, 0.5), "y": (-0.10, 0.10), "z": (0.103, 0.103), "yaw": (0, 0, 0)},
+            "pose_range": {"x": (0.15, 0.3), "y": (-0.15, 0.10), "z": (-0.03, -0.03), "yaw": (0, 6.283)},
             "min_separation": 0.12,
-            "asset_cfgs": [SceneEntityCfg("cube")],
+            "asset_cfgs": [SceneEntityCfg("bottle")],
         },
     )
 
+    randomize_scene_light = EventTerm(
+        func=omy_stack_events.randomize_scene_lighting_domelight,
+        mode="reset",
+        params={
+            "intensity_range": (1000.0, 3000.0),
+            "color_range": ((0.5, 1.0), (0.5, 1.0), (0.5, 1.0)),
+            "asset_cfg": SceneEntityCfg("light"),
+        },
+    )
+
+    randomize_top_camera = EventTerm(
+        func=omy_stack_events.randomize_camera_pose,
+        mode="reset",
+        params={
+            "asset_cfg": SceneEntityCfg("top_cam"),
+            "pose_range": {
+                "x": (-0.01, 0.01),
+                "y": (-0.01, 0.01),
+                "z": (-0.01, 0.01),
+                "roll": (-0.01, 0.01),
+                "pitch": (-0.01, 0.01),
+                "yaw": (-0.01, 0.01),
+            },
+            "convention": "ros",
+        },
+    )
 
 @configclass
-class OMYCubeStackEnvCfg(StackEnvCfg):
+class OMYBottleStackEnvCfg(StackEnvCfg):
     def __post_init__(self):
         # post init of parent
         super().__post_init__()
@@ -87,35 +114,14 @@ class OMYCubeStackEnvCfg(StackEnvCfg):
         self.scene.robot = OMY_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.spawn.semantic_tags = [("class", "robot")]
 
+        # Set table
         self.scene.table = OMY_TABLE_CFG.replace(prim_path="{ENV_REGEX_NS}/Table")
 
-        # Add semantics to table
-        # self.scene.table.spawn.semantic_tags = [("class", "table")]
+        self.scene.bottle = PLASTIC_BOTTLE_CFG.replace(prim_path="{ENV_REGEX_NS}/Bottle")
 
         # Add semantics to ground
         self.scene.plane.semantic_tags = [("class", "ground")]
 
-        # Rigid body properties of each cube
-        cube_properties = RigidBodyPropertiesCfg(
-            solver_position_iteration_count=16,
-            solver_velocity_iteration_count=1,
-            max_angular_velocity=1000.0,
-            max_linear_velocity=1000.0,
-            max_depenetration_velocity=5.0,
-            disable_gravity=False,
-        )
-
-        # Set each stacking cube deterministically
-        self.scene.cube = RigidObjectCfg(
-            prim_path="{ENV_REGEX_NS}/cube",
-            init_state=RigidObjectCfg.InitialStateCfg(pos=[0.2, 0.0, 0.0203], rot=[1, 0, 0, 0]),
-            spawn=UsdFileCfg(
-                usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/Blocks/blue_block.usd",
-                scale=(1.0, 1.0, 1.0),
-                rigid_props=cube_properties,
-                semantic_tags=[("class", "cube")],
-            ),
-        )
         self.scene.robot_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/Robot/OMY/link6/robot_cam",
             update_period=0.0,
