@@ -68,7 +68,7 @@ class EventCfg:
         func=omy_pickup_events.randomize_object_pose,
         mode="reset",
         params={
-            "pose_range": {"x": (0.15, 0.3), "y": (-0.2, 0.1), "z": (0.04, 0.04), "pitch": (0.0, 6.283), "yaw": (-0.35, 0.35)},
+            "pose_range": {"x": (0.2, 0.3), "y": (-0.15, 0.0), "z": (0.0, 0.0), "pitch": (0.0, 6.283), "yaw": (-0.30, 0.30)},
             "min_separation": 0.12,
             "asset_cfgs": [SceneEntityCfg("bottle")],
         },
@@ -79,7 +79,7 @@ class EventCfg:
         mode="reset",
         params={
             "intensity_range": (1000.0, 3000.0),
-            "color_range": ((0.5, 1.0), (0.5, 1.0), (0.5, 1.0)),
+            "color_range": ((0.7, 1.0), (0.7, 1.0), (0.7, 1.0)),
             "asset_cfg": SceneEntityCfg("light"),
         },
     )
@@ -144,7 +144,7 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
             width=224,
             data_types=["rgb"],
             spawn=sim_utils.PinholeCameraCfg(
-                focal_length=8.0, focus_distance=200.0, horizontal_aperture=20.955, clipping_range=(0.01, 100.0)
+                focal_length=10.0, focus_distance=200.0, horizontal_aperture=20.955, clipping_range=(0.01, 100.0)
             ),
             offset=CameraCfg.OffsetCfg(
                 pos=(0.0, 0.0, 0.0),

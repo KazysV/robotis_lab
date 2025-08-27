@@ -1,65 +1,37 @@
 import os
 import h5py
 import numpy as np
-
+import argparse
 from tqdm import tqdm
+from datetime import datetime
 
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
-"""
-NOTE: Please use the environment of lerobot.
 
-Because lerobot is rapidly developing, we don't guarantee the compatibility for the latest version of lerobot.
-Currently, the commit we used is https://github.com/huggingface/lerobot/commit/26cb4614c961e6da04e4b83b6178331f4150650d
-"""
-
-# Feature definition for single-arm omy_follower
-ARM_FEATURES = {
+ENV_FEATURES = {
     "action": {
         "dtype": "float32",
         "shape": (10,),
         "names": [
-            "joint1.pos",
-            "joint2.pos",
-            "joint3.pos",
-            "joint4.pos",
-            "joint5.pos",
-            "joint6.pos",
-            "rh_l1.pos",
-            "rh_l2.pos",
-            "rh_r1_joint.pos",
-            "rh_r2.pos",
+            "joint1.pos","joint2.pos","joint3.pos","joint4.pos","joint5.pos","joint6.pos",
+            "rh_l1.pos","rh_l2.pos","rh_r1_joint.pos","rh_r2.pos",
         ]
     },
     "observation.state": {
         "dtype": "float32",
         "shape": (10,),
         "names": [
-            "joint1.pos",
-            "joint2.pos",
-            "joint3.pos",
-            "joint4.pos",
-            "joint5.pos",
-            "joint6.pos",
-            "rh_l1.pos",
-            "rh_l2.pos",
-            "rh_r1_joint.pos",
-            "rh_r2.pos",
+            "joint1.pos","joint2.pos","joint3.pos","joint4.pos","joint5.pos","joint6.pos",
+            "rh_l1.pos","rh_l2.pos","rh_r1_joint.pos","rh_r2.pos",
         ]
-
     },
     "observation.images.robot_cam": {
         "dtype": "video",
         "shape": [224, 224, 3],
         "names": ["height", "width", "channels"],
         "video_info": {
-            "video.height": 224,
-            "video.width": 224,
-            "video.codec": "av1",
-            "video.pix_fmt": "yuv420p",
-            "video.is_depth_map": False,
-            "video.fps": 30.0,
-            "video.channels": 3,
-            "has_audio": False,
+            "video.height": 224,"video.width": 224,"video.codec": "av1",
+            "video.pix_fmt": "yuv420p","video.is_depth_map": False,
+            "video.fps": 30.0,"video.channels": 3,"has_audio": False,
         },
     },
     "observation.images.top_cam": {
@@ -67,20 +39,15 @@ ARM_FEATURES = {
         "shape": [224, 224, 3],
         "names": ["height", "width", "channels"],
         "video_info": {
-            "video.height": 224,
-            "video.width": 224,
-            "video.codec": "av1",
-            "video.pix_fmt": "yuv420p",
-            "video.is_depth_map": False,
-            "video.fps": 30.0,
-            "video.channels": 3,
-            "has_audio": False,
+            "video.height": 224,"video.width": 224,"video.codec": "av1",
+            "video.pix_fmt": "yuv420p","video.is_depth_map": False,
+            "video.fps": 30.0,"video.channels": 3,"has_audio": False,
         },
     }
 }
 
 
-def process_single_arm_data(dataset: LeRobotDataset, task: str, demo_group: h5py.Group, demo_name: str) -> bool:
+def process_data(dataset: LeRobotDataset, task: str, demo_group: h5py.Group, demo_name: str) -> bool:
     try:
         actions = np.array(demo_group['obs/actions'])
         joint_pos = np.array(demo_group['obs/joint_pos'])
@@ -90,9 +57,9 @@ def process_single_arm_data(dataset: LeRobotDataset, task: str, demo_group: h5py
         print(f'Demo {demo_name} is not valid, skip it')
         return False
 
-
     assert actions.shape[0] == joint_pos.shape[0]
     total_state_frames = actions.shape[0]
+
     # skip the first 5 frames
     for frame_index in tqdm(range(5, total_state_frames), desc='Processing each frame'):
         frame = {
@@ -105,23 +72,16 @@ def process_single_arm_data(dataset: LeRobotDataset, task: str, demo_group: h5py
 
     return True
 
-def convert_isaaclab_to_lerobot():
-    """NOTE: Modify the following parameters to fit your own dataset"""
-    repo_id = 'data/omy_pickup_bottle'  # The repo name for saving the dataset
-    robot_type = 'omy_follower'
-    fps = 30
-    hdf5_root = './datasets'
-    hdf5_files = [os.path.join(hdf5_root, 'dataset.hdf5')]
-    task = 'OMY_Pickup'
-    push_to_hub = False
 
-    """convert to LeRobotDataset"""
+def convert_isaaclab_to_lerobot(task: str, repo_id: str, robot_type: str, dataset_path: str, fps: int, push_to_hub: bool = False):
+    hdf5_files = [dataset_path]
+
     now_episode_index = 0
     dataset = LeRobotDataset.create(
         repo_id=repo_id,
         fps=fps,
         robot_type=robot_type,
-        features=ARM_FEATURES,
+        features=ENV_FEATURES,
     )
 
     for hdf5_id, hdf5_file in enumerate(hdf5_files):
@@ -136,7 +96,7 @@ def convert_isaaclab_to_lerobot():
                     print(f'Demo {demo_name} is not successful, skip it')
                     continue
 
-                valid = process_single_arm_data(dataset, task, demo_group, demo_name)
+                valid = process_data(dataset, task, demo_group, demo_name)
 
                 if valid:
                     now_episode_index += 1
@@ -146,5 +106,31 @@ def convert_isaaclab_to_lerobot():
     if push_to_hub:
         dataset.push_to_hub()
 
+
 if __name__ == '__main__':
-    convert_isaaclab_to_lerobot()
+    parser = argparse.ArgumentParser(description="Convert IsaacLab dataset to LeRobot format")
+    parser.add_argument("--task_name", type=str, required=True, help="Task name (e.g., OMY_Pickup)")
+    parser.add_argument("--robot_type", type=str, default="aiworker",
+        help="Robot type (default: aiworker)")
+    parser.add_argument("--dataset_path", type=str, default="./datasets/dataset.hdf5",
+        help="Path to dataset HDF5 file (default: ./datasets/dataset.hdf5)")
+    parser.add_argument("--fps", type=int, default=30,
+        help="Frames per second for dataset (default: 30)")
+    parser.add_argument("--push_to_hub", action="store_true",
+        help="Whether to push dataset to HuggingFace Hub (default: False)")
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    default_repo_id = f"data/{timestamp}"
+    parser.add_argument("--repo_id", type=str, default=default_repo_id,
+        help=f"Repo ID for saving dataset (default: {default_repo_id})")
+
+    args = parser.parse_args()
+
+    convert_isaaclab_to_lerobot(
+        task=args.task_name,
+        repo_id=args.repo_id,
+        robot_type=args.robot_type,
+        dataset_path=args.dataset_path,
+        fps=args.fps,
+        push_to_hub=args.push_to_hub
+    )
