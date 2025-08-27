@@ -26,10 +26,10 @@ import gymnasium as gym
 ##
 
 gym.register(
-    id="RobotisLab-Real-Stack-Bottle-OMY-v0",
+    id="RobotisLab-Real-Pickup-Bottle-OMY-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.joint_pos_env_cfg:OMYBottleStackEnvCfg",
+        "env_cfg_entry_point": f"{__name__}.joint_pos_env_cfg:OMYBottlePickupEnvCfg",
     },
     disable_env_checker=True,
 )

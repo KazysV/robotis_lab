@@ -47,36 +47,36 @@ ARM_FEATURES = {
         ]
 
     },
-    # "observation.images.front": {
-    #     "dtype": "video",
-    #     "shape": [480, 640, 3],
-    #     "names": ["height", "width", "channels"],
-    #     "video_info": {
-    #         "video.height": 480,
-    #         "video.width": 640,
-    #         "video.codec": "av1",
-    #         "video.pix_fmt": "yuv420p",
-    #         "video.is_depth_map": False,
-    #         "video.fps": 30.0,
-    #         "video.channels": 3,
-    #         "has_audio": False,
-    #     },
-    # },
-    # "observation.images.wrist": {
-    #     "dtype": "video",
-    #     "shape": [480, 640, 3],
-    #     "names": ["height", "width", "channels"],
-    #     "video_info": {
-    #         "video.height": 480,
-    #         "video.width": 640,
-    #         "video.codec": "av1",
-    #         "video.pix_fmt": "yuv420p",
-    #         "video.is_depth_map": False,
-    #         "video.fps": 30.0,
-    #         "video.channels": 3,
-    #         "has_audio": False,
-    #     },
-    # }
+    "observation.images.robot_cam": {
+        "dtype": "video",
+        "shape": [224, 224, 3],
+        "names": ["height", "width", "channels"],
+        "video_info": {
+            "video.height": 224,
+            "video.width": 224,
+            "video.codec": "av1",
+            "video.pix_fmt": "yuv420p",
+            "video.is_depth_map": False,
+            "video.fps": 30.0,
+            "video.channels": 3,
+            "has_audio": False,
+        },
+    },
+    "observation.images.top_cam": {
+        "dtype": "video",
+        "shape": [224, 224, 3],
+        "names": ["height", "width", "channels"],
+        "video_info": {
+            "video.height": 224,
+            "video.width": 224,
+            "video.codec": "av1",
+            "video.pix_fmt": "yuv420p",
+            "video.is_depth_map": False,
+            "video.fps": 30.0,
+            "video.channels": 3,
+            "has_audio": False,
+        },
+    }
 }
 
 
@@ -84,8 +84,8 @@ def process_single_arm_data(dataset: LeRobotDataset, task: str, demo_group: h5py
     try:
         actions = np.array(demo_group['obs/actions'])
         joint_pos = np.array(demo_group['obs/joint_pos'])
-        # front_images = np.array(demo_group['obs/front'])
-        # wrist_images = np.array(demo_group['obs/wrist'])
+        robot_cam_images = np.array(demo_group['obs/robot_cam'])
+        top_cam_images = np.array(demo_group['obs/top_cam'])
     except KeyError:
         print(f'Demo {demo_name} is not valid, skip it')
         return False
@@ -98,8 +98,8 @@ def process_single_arm_data(dataset: LeRobotDataset, task: str, demo_group: h5py
         frame = {
             "action": actions[frame_index],
             "observation.state": joint_pos[frame_index],
-            # "observation.images.front": front_images[frame_index],
-            # "observation.images.wrist": wrist_images[frame_index],
+            "observation.images.robot_cam": robot_cam_images[frame_index],
+            "observation.images.top_cam": top_cam_images[frame_index],
         }
         dataset.add_frame(frame=frame, task=task)
 
@@ -107,12 +107,12 @@ def process_single_arm_data(dataset: LeRobotDataset, task: str, demo_group: h5py
 
 def convert_isaaclab_to_lerobot():
     """NOTE: Modify the following parameters to fit your own dataset"""
-    repo_id = 'data/omy_stack'
+    repo_id = 'data/omy_pickup_bottle'  # The repo name for saving the dataset
     robot_type = 'omy_follower'
     fps = 30
     hdf5_root = './datasets'
     hdf5_files = [os.path.join(hdf5_root, 'dataset.hdf5')]
-    task = 'OMY_Stack'
+    task = 'OMY_Pickup'
     push_to_hub = False
 
     """convert to LeRobotDataset"""

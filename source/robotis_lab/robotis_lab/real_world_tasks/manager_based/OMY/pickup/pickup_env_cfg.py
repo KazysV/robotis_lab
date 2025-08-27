@@ -151,8 +151,8 @@ class TerminationsCfg:
     )
 
 @configclass
-class StackEnvCfg(ManagerBasedRLEnvCfg):
-    """Configuration for the stacking environment."""
+class PickupEnvCfg(ManagerBasedRLEnvCfg):
+    """Configuration for the pickuping environment."""
 
     # Scene settings
     scene: ObjectTableSceneCfg = ObjectTableSceneCfg(num_envs=4096, env_spacing=2.5, replicate_physics=False)

@@ -168,33 +168,3 @@ def object_grasped(
     )
     return grasped
 
-
-def object_stacked(
-    env: ManagerBasedRLEnv,
-    robot_cfg: SceneEntityCfg,
-    upper_object_cfg: SceneEntityCfg,
-    lower_object_cfg: SceneEntityCfg,
-    xy_threshold: float = 0.05,
-    height_threshold: float = 0.005,
-    height_diff: float = 0.0468,
-    gripper_open_threshold: torch.tensor = torch.tensor([0.03]),
-) -> torch.Tensor:
-    """Check if an object is stacked by the specified robot."""
-    robot: Articulation = env.scene[robot_cfg.name]
-    upper_object: RigidObject = env.scene[upper_object_cfg.name]
-    lower_object: RigidObject = env.scene[lower_object_cfg.name]
-
-    pos_diff = upper_object.data.root_pos_w - lower_object.data.root_pos_w
-    height_dist = torch.linalg.vector_norm(pos_diff[:, 2:], dim=1)
-    xy_dist = torch.linalg.vector_norm(pos_diff[:, :2], dim=1)
-
-    stacked = torch.logical_and(xy_dist < xy_threshold, (height_dist - height_diff) < height_threshold)
-
-    stacked = torch.logical_and(
-        robot.data.joint_pos[:, -1] <= gripper_open_threshold.to(env.device), stacked
-    )
-    stacked = torch.logical_and(
-        robot.data.joint_pos[:, -2] <= gripper_open_threshold.to(env.device), stacked
-    )
-
-    return stacked
