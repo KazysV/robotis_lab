@@ -88,7 +88,7 @@ class EventCfg:
         func=omy_pickup_events.randomize_camera_pose,
         mode="reset",
         params={
-            "asset_cfg": SceneEntityCfg("top_cam"),
+            "asset_cfg": SceneEntityCfg("cam_top"),
             "pose_range": {
                 "x": (-0.01, 0.01),
                 "y": (-0.01, 0.01),
@@ -122,8 +122,8 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
         # Add semantics to ground
         self.scene.plane.semantic_tags = [("class", "ground")]
 
-        self.scene.robot_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/OMY/link6/robot_cam",
+        self.scene.cam_wrist = CameraCfg(
+            prim_path="{ENV_REGEX_NS}/Robot/OMY/link6/cam_wrist",
             update_period=0.0,
             height=224,
             width=224,
@@ -137,8 +137,8 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
                 convention="isaac",
             )
         )
-        self.scene.top_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/Table/robotis_omy_table/camera_link/top_cam",
+        self.scene.cam_top = CameraCfg(
+            prim_path="{ENV_REGEX_NS}/Table/robotis_omy_table/camera_link/cam_top",
             update_period=0.0,
             height=224,
             width=224,

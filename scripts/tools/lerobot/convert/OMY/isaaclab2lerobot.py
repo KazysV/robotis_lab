@@ -24,7 +24,7 @@ ENV_FEATURES = {
             "rh_l1.pos","rh_l2.pos","rh_r1_joint.pos","rh_r2.pos",
         ]
     },
-    "observation.images.robot_cam": {
+    "observation.images.cam_wrist": {
         "dtype": "video",
         "shape": [224, 224, 3],
         "names": ["height", "width", "channels"],
@@ -34,7 +34,7 @@ ENV_FEATURES = {
             "video.fps": 30.0,"video.channels": 3,"has_audio": False,
         },
     },
-    "observation.images.top_cam": {
+    "observation.images.cam_top": {
         "dtype": "video",
         "shape": [224, 224, 3],
         "names": ["height", "width", "channels"],
@@ -51,8 +51,8 @@ def process_data(dataset: LeRobotDataset, task: str, demo_group: h5py.Group, dem
     try:
         actions = np.array(demo_group['obs/actions'])
         joint_pos = np.array(demo_group['obs/joint_pos'])
-        robot_cam_images = np.array(demo_group['obs/robot_cam'])
-        top_cam_images = np.array(demo_group['obs/top_cam'])
+        cam_wrist_images = np.array(demo_group['obs/cam_wrist'])
+        cam_top_images = np.array(demo_group['obs/cam_top'])
     except KeyError:
         print(f'Demo {demo_name} is not valid, skip it')
         return False
@@ -65,8 +65,8 @@ def process_data(dataset: LeRobotDataset, task: str, demo_group: h5py.Group, dem
         frame = {
             "action": actions[frame_index],
             "observation.state": joint_pos[frame_index],
-            "observation.images.robot_cam": robot_cam_images[frame_index],
-            "observation.images.top_cam": top_cam_images[frame_index],
+            "observation.images.cam_wrist": cam_wrist_images[frame_index],
+            "observation.images.cam_top": cam_top_images[frame_index],
         }
         dataset.add_frame(frame=frame, task=task)
 

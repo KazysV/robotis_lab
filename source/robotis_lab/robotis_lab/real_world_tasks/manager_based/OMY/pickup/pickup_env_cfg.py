@@ -56,8 +56,8 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
 
     table: AssetBaseCfg = MISSING
 
-    robot_cam: CameraCfg = MISSING
-    top_cam: CameraCfg = MISSING
+    cam_wrist: CameraCfg = MISSING
+    cam_top: CameraCfg = MISSING
 
     # plane
     plane = AssetBaseCfg(
@@ -96,13 +96,13 @@ class ObservationsCfg:
         actions = ObsTerm(func=mdp.last_action)
         joint_pos = ObsTerm(func=mdp.joint_pos_rel)
         joint_vel = ObsTerm(func=mdp.joint_vel_rel)
-        robot_cam = ObsTerm(
+        cam_wrist = ObsTerm(
             func=mdp.image,
-            params={"sensor_cfg": SceneEntityCfg("robot_cam"), "data_type": "rgb", "normalize": False},
+            params={"sensor_cfg": SceneEntityCfg("cam_wrist"), "data_type": "rgb", "normalize": False},
         )
-        top_cam = ObsTerm(
+        cam_top = ObsTerm(
             func=mdp.image,
-            params={"sensor_cfg": SceneEntityCfg("top_cam"), "data_type": "rgb", "normalize": False},
+            params={"sensor_cfg": SceneEntityCfg("cam_top"), "data_type": "rgb", "normalize": False},
         )
 
         def __post_init__(self):
