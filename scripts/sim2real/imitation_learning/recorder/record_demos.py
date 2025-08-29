@@ -15,7 +15,7 @@ from isaaclab.app import AppLauncher
 
 # add argparse arguments
 parser = argparse.ArgumentParser(description="robotis_lab teleoperation for robotis_lab environments.")
-parser.add_argument("--teleop_device", type=str, default="keyboard", choices=['keyboard','omy_leader'], help="Device for interacting with environment")
+parser.add_argument("--robot_type", type=str, default="keyboard", choices=['OMY'], help="Type of robot to use for teleoperation.")
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 parser.add_argument("--seed", type=int, default=42, help="Seed for the environment.")
 
@@ -44,12 +44,12 @@ from isaaclab.envs import ManagerBasedRLEnv
 from isaaclab_tasks.utils import parse_env_cfg
 from isaaclab.managers import TerminationTermCfg, DatasetExportMode
 
-from dds_sdk.omy_leader import OMYLeader
-
 import robotis_lab
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "recorder_manager"))
-from recorder_manager import StreamingRecorderManager
+import sys, os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from recorder_manager.recorder_manager import StreamingRecorderManager
 
 class RateLimiter:
     """Convenience class for enforcing rates in loops."""
@@ -90,7 +90,6 @@ def main():
         os.makedirs(output_dir)
 
     env_cfg = parse_env_cfg(args_cli.task, device=args_cli.device, num_envs=1)
-    env_cfg.use_teleop_device(args_cli.teleop_device)
     env_cfg.seed = args_cli.seed
     task_name = args_cli.task
 
@@ -120,14 +119,12 @@ def main():
     env.recorder_manager.cfg.dataset_export_mode = DatasetExportMode.EXPORT_NONE
 
     # create controller
-    if args_cli.teleop_device == "omy_leader":
-        teleop_interface = OMYLeader(env)
-    elif args_cli.teleop_device == "keyboard":
-        from isaaclab.devices import Se3Keyboard, Se3KeyboardCfg
-        teleop_interface = Se3Keyboard(Se3KeyboardCfg())
+    if args_cli.robot_type == "OMY":
+        from dds_sdk.omy_sdk import OMYSdk
+        teleop_interface = OMYSdk(env)
     else:
         raise ValueError(
-            f"Invalid device interface '{args_cli.teleop_device}'. Supported: 'omy_leader', 'keyboard'."
+            f"Invalid device interface '{args_cli.robot_type}'. Supported: 'OMY'."
         )
 
     # add teleoperation key for env reset
@@ -147,7 +144,6 @@ def main():
 
     teleop_interface.add_callback("R", reset_recording_instance)
     teleop_interface.add_callback("N", reset_task_success)
-    print(teleop_interface)
 
     rate_limiter = RateLimiter(args_cli.step_hz)
 
@@ -156,7 +152,6 @@ def main():
     teleop_interface.reset()
 
     current_recorded_demo_count = 0
-    current_failed_demo_count = 0
 
     start_record_state = False
 
@@ -164,7 +159,7 @@ def main():
     while simulation_app.is_running():
         # run everything in inference mode
         with torch.inference_mode():
-            actions = teleop_interface.advance()
+            actions = teleop_interface.get_action()
             if should_reset_task_success:
                 print("Task Success!!!")
                 should_reset_task_success = False

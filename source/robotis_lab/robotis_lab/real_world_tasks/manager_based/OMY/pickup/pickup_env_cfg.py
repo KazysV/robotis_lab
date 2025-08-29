@@ -34,8 +34,6 @@ from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.sensors.frame_transformer.frame_transformer_cfg import FrameTransformerCfg
 from isaaclab.sim.spawners.from_files.from_files_cfg import GroundPlaneCfg
 from isaaclab.utils import configclass
-from isaaclab.controllers.differential_ik_cfg import DifferentialIKControllerCfg
-from isaaclab.envs.mdp.actions.actions_cfg import DifferentialInverseKinematicsActionCfg
 from isaaclab.sensors import CameraCfg
 from robotis_lab.assets.object.robotis_omy_table import OMY_TABLE_CFG
 
@@ -81,8 +79,8 @@ class ActionsCfg:
 
     # will be set by agent env cfg
     print("ActionsCfg: arm_action and gripper_action will be set by agent env cfg")
-    arm_action: mdp.ActionTermCfg = MISSING
-    gripper_action: mdp.ActionTermCfg = MISSING
+    arm_action: mdp.JointPositionActionCfg = MISSING
+    gripper_action: mdp.JointPositionActionCfg = MISSING
 
 
 @configclass
@@ -183,43 +181,3 @@ class PickupEnvCfg(ManagerBasedRLEnvCfg):
         self.sim.physx.gpu_found_lost_aggregate_pairs_capacity = 1024 * 1024 * 4
         self.sim.physx.gpu_total_aggregate_pairs_capacity = 16 * 1024
         self.sim.physx.friction_correlation_distance = 0.00625
-
-    def use_teleop_device(self, teleop_device) -> None:
-        self.actions = self.init_action_cfg(self.actions, device=teleop_device)
-        if teleop_device == "keyboard":
-            self.scene.robot.spawn.rigid_props.disable_gravity = True
-
-    def init_action_cfg(self, action_cfg, device):
-        print(f"Initializing action configuration for device: {device}")
-        if device in ['omy_leader']:
-            action_cfg.arm_action = mdp.JointPositionActionCfg(
-                asset_name="robot",
-                joint_names=["joint.*"],
-                scale=1.0,
-                use_default_offset=False,
-            )
-            action_cfg.gripper_action = mdp.JointPositionActionCfg(
-                asset_name="robot",
-                joint_names=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
-                scale=1.0,
-                use_default_offset=False,
-            )
-        elif device in ['keyboard']:
-            action_cfg.arm_action = DifferentialInverseKinematicsActionCfg(
-            asset_name="robot",
-            joint_names=["joint[1-6]"],
-            body_name="link6",
-            controller=DifferentialIKControllerCfg(command_type="pose", use_relative_mode=True, ik_method="dls"),
-            scale=0.1,
-            body_offset=DifferentialInverseKinematicsActionCfg.OffsetCfg(pos=[0.0, 0.0, 0.0]),
-        )
-            action_cfg.gripper_action = mdp.BinaryJointPositionActionCfg(
-                asset_name="robot",
-                joint_names=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
-                open_command_expr={"rh_.*": 0.0},
-                close_command_expr={"rh_.*": 0.8},
-            )
-        else:
-            action_cfg.arm_action = None
-            action_cfg.gripper_action = None
-        return action_cfg

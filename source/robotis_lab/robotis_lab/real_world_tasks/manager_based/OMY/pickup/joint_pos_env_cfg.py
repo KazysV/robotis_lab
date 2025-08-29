@@ -42,6 +42,8 @@ from robotis_lab.assets.robots.OMY import OMY_CFG  # isort: skip
 from robotis_lab.assets.object.robotis_omy_table import OMY_TABLE_CFG
 from robotis_lab.assets.object.plastic_bottle import PLASTIC_BOTTLE_CFG
 
+from . import mdp
+
 @configclass
 class EventCfg:
     """Configuration for events."""
@@ -113,6 +115,20 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
         # Set OMY as robot
         self.scene.robot = OMY_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.spawn.semantic_tags = [("class", "robot")]
+
+        # Set actions for the specific robot type (OMY)
+        self.actions.arm_action = mdp.JointPositionActionCfg(
+            asset_name="robot",
+            joint_names=["joint.*"],
+            scale=1.0,
+            use_default_offset=False,
+        )
+        self.actions.gripper_action = mdp.JointPositionActionCfg(
+            asset_name="robot",
+            joint_names=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
+            scale=1.0,
+            use_default_offset=False,
+        )
 
         # Set table
         self.scene.table = OMY_TABLE_CFG.replace(prim_path="{ENV_REGEX_NS}/Table")

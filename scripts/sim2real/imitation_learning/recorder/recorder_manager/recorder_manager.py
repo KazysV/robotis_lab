@@ -4,7 +4,7 @@ from typing import Sequence
 from isaaclab.managers import RecorderManager, DatasetExportMode
 from isaaclab.envs import ManagerBasedEnv
 
-from hdf5_dataset_file_handler import StreamingHDF5DatasetFileHandler, StreamWriteMode
+from .hdf5_dataset_file_handler import StreamingHDF5DatasetFileHandler, StreamWriteMode
 
 
 class StreamingRecorderManager(RecorderManager):
