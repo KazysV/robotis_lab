@@ -28,7 +28,7 @@ class OMYSdk:
         self.mode = mode  # 'record' or 'inference'
 
         # Joint names
-        self.joint_names = self.env.scene["robot"].data.joint_names
+        self.joint_names = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"]
         self.exclude_joints = []
 
         # Initialize DDS
@@ -107,13 +107,7 @@ class OMYSdk:
                 if msg is not None and msg.points:
                     msg_joint_names = msg.joint_names
                     msg_positions = msg.points[-1].positions
-
                     joint_dict = dict(zip(msg_joint_names, msg_positions))
-                    master_val = joint_dict.get("rh_r1_joint", 0.0)
-                    joint_dict["rh_l1"] = master_val
-                    joint_dict["rh_l2"] = master_val
-                    joint_dict["rh_r2"] = master_val
-
                     self.joint_trajectory_cmd = [
                         joint_dict.get(name, 0.0) for name in self.joint_names
                     ]
@@ -242,12 +236,9 @@ class OMYSdk:
         if action['reset']:
             return {"reset": True}
         if not action['started']:
-            # When not started, return the current robot position to maintain pose
-            current_positions = self.env.scene["robot"].data.joint_pos.squeeze(0)
-            # Ensure the tensor has the correct batch dimension
-            if current_positions.dim() == 1:
-                current_positions = current_positions.unsqueeze(0)
-            return current_positions
+            if action['reset']:
+                return {"reset": True}
+            return None
 
         joint_state = action['joint_state']
         positions = [joint_state.get(name, 0.0) for name in self.joint_names]

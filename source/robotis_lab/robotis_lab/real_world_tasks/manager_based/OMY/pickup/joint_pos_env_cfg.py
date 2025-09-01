@@ -125,7 +125,7 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
         )
         self.actions.gripper_action = mdp.JointPositionActionCfg(
             asset_name="robot",
-            joint_names=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
+            joint_names=["rh_r1_joint"],
             scale=1.0,
             use_default_offset=False,
         )
@@ -183,20 +183,6 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
                     name="end_effector",
                     offset=OffsetCfg(
                         pos=[0.0, -0.248, 0.0],
-                    ),
-                ),
-                FrameTransformerCfg.FrameCfg(
-                    prim_path="{ENV_REGEX_NS}/Robot/OMY/rh_p12_rn_r2",
-                    name="tool_rightfinger",
-                    offset=OffsetCfg(
-                        pos=(0.0, 0.0, 0.0),
-                    ),
-                ),
-                FrameTransformerCfg.FrameCfg(
-                    prim_path="{ENV_REGEX_NS}/Robot/OMY/rh_p12_rn_l2",
-                    name="tool_leftfinger",
-                    offset=OffsetCfg(
-                        pos=(0.0, 0.0, 0.0),
                     ),
                 ),
             ],

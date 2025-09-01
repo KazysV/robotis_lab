@@ -28,7 +28,7 @@ OMY_CFG = ArticulationCfg(
             max_depenetration_velocity=5.0,
         ),
         articulation_props=sim_utils.ArticulationRootPropertiesCfg(
-            enabled_self_collisions=True,
+            enabled_self_collisions=False,
             solver_position_iteration_count=8,
             solver_velocity_iteration_count=1,
         ),
@@ -42,10 +42,7 @@ OMY_CFG = ArticulationCfg(
             "joint4": -1.1,
             "joint5": 1.6,
             "joint6": 0.0,
-            "rh_l1": 0.0,
-            "rh_l2": 0.0,
             "rh_r1_joint": 0.0,
-            "rh_r2": 0.0,
         },
     ),
     actuators={
@@ -64,11 +61,11 @@ OMY_CFG = ArticulationCfg(
             damping=20.0,
         ),
         "hand": ImplicitActuatorCfg(
-            joint_names_expr=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
+            joint_names_expr=["rh_r1_joint"],
             velocity_limit_sim=6.0,
-            effort_limit_sim=100.0,
-            stiffness=80.0,
-            damping=10.0,
+            effort_limit_sim=30.0,
+            stiffness=50.0,
+            damping=20.0,
         ),
     },
 )
@@ -84,10 +81,7 @@ OMY_HIGH_PD_CFG = OMY_CFG.replace(
             "joint4": -0.2,
             "joint5": 1.53,
             "joint6": 0.0,
-            "rh_l1": 0.0,
-            "rh_l2": 0.0,
             "rh_r1_joint": 0.0,
-            "rh_r2": 0.0,
         }
     ),
     actuators={
@@ -106,7 +100,7 @@ OMY_HIGH_PD_CFG = OMY_CFG.replace(
             damping=80,
         ),
         "hand": ImplicitActuatorCfg(
-            joint_names_expr=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
+            joint_names_expr=["rh_r1_joint"],
             velocity_limit_sim=6.0,
             effort_limit_sim=1000.0,
             stiffness=1000000.0,

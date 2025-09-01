@@ -27,120 +27,46 @@ from typing import TYPE_CHECKING
 from isaaclab.assets import Articulation, RigidObject, RigidObjectCollection
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import FrameTransformer
+from isaaclab.envs import ManagerBasedEnv
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
+def joint_pos_rel_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str = "robot") -> torch.Tensor:
+    """
+    Returns the relative joint positions for the specified joint names.
 
-def bottle_positions_in_world_frame(
-    env: ManagerBasedRLEnv,
-    bottle_cfg: SceneEntityCfg = SceneEntityCfg("bottle"),
-) -> torch.Tensor:
-    """Position of the bottles in the world frame."""
-    bottle: RigidObject = env.scene[bottle_cfg.name]
+    Args:
+        env: ManagerBasedEnv instance.
+        joint_names: List of joint names to extract.
+        asset_name: Name of the asset (default: "robot").
 
-    return torch.cat((bottle.data.root_pos_w), dim=1)
+    Returns:
+        torch.Tensor of shape [1, len(joint_names)]
+    """
+    asset: Articulation = env.scene[asset_name]
 
+    joint_ids = [asset.joint_names.index(name) for name in joint_names]
 
-def instance_randomize_bottle_positions_in_world_frame(
-    env: ManagerBasedRLEnv,
-    bottle_cfg: SceneEntityCfg = SceneEntityCfg("bottle"),
-) -> torch.Tensor:
-    """Position of the bottles in the world frame."""
-    if not hasattr(env, "rigid_objects_in_focus"):
-        return torch.full((env.num_envs, 9), fill_value=-1)
+    return asset.data.joint_pos[:, joint_ids] - asset.data.default_joint_pos[:, joint_ids]
 
-    bottle: RigidObjectCollection = env.scene[bottle_cfg.name]
+def joint_vel_rel_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str = "robot") -> torch.Tensor:
+    """
+    Returns the relative joint velocities for the specified joint names.
 
-    bottle_pos_w = []
-    for env_id in range(env.num_envs):
-        bottle_pos_w.append(bottle.data.object_pos_w[env_id, env.rigid_objects_in_focus[env_id][0], :3])
-    bottle_pos_w = torch.stack(bottle_pos_w)
+    Args:
+        env: ManagerBasedEnv instance.
+        joint_names: List of joint names to extract.
+        asset_name: Name of the asset (default: "robot").
 
-    return torch.cat((bottle_pos_w), dim=1)
+    Returns:
+        torch.Tensor of shape [1, len(joint_names)]
+    """
+    asset: Articulation = env.scene[asset_name]
 
+    joint_ids = [asset.joint_names.index(name) for name in joint_names]
 
-def bottle_orientations_in_world_frame(
-    env: ManagerBasedRLEnv,
-    bottle_cfg: SceneEntityCfg = SceneEntityCfg("bottle"),
-):
-    """Orientation of the bottles in the world frame."""
-    bottle: RigidObject = env.scene[bottle_cfg.name]
-
-    return torch.cat((bottle.data.root_quat_w), dim=1)
-
-
-def instance_randomize_bottle_orientations_in_world_frame(
-    env: ManagerBasedRLEnv,
-    bottle_cfg: SceneEntityCfg = SceneEntityCfg("bottle"),
-) -> torch.Tensor:
-    """Orientation of the bottles in the world frame."""
-    if not hasattr(env, "rigid_objects_in_focus"):
-        return torch.full((env.num_envs, 9), fill_value=-1)
-
-    bottle: RigidObjectCollection = env.scene[bottle_cfg.name]
-
-    bottle_quat_w = []
-    for env_id in range(env.num_envs):
-        bottle_quat_w.append(bottle.data.object_quat_w[env_id, env.rigid_objects_in_focus[env_id][0], :4])
-    bottle_quat_w = torch.stack(bottle_quat_w)
-
-    return torch.cat((bottle_quat_w), dim=1)
-
-
-def instance_randomize_object_obs(
-    env: ManagerBasedRLEnv,
-    bottle_cfg: SceneEntityCfg = SceneEntityCfg("bottle"),
-    ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame"),
-):
-    if not hasattr(env, "rigid_objects_in_focus"):
-        return torch.full((env.num_envs, 9), fill_value=-1)
-
-    bottle: RigidObjectCollection = env.scene[bottle_cfg.name]
-    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
-
-    bottle_pos_w = []
-    bottle_quat_w = []
-    for env_id in range(env.num_envs):
-        bottle_pos_w.append(bottle.data.object_pos_w[env_id, env.rigid_objects_in_focus[env_id][0], :3])
-        bottle_quat_w.append(bottle.data.object_quat_w[env_id, env.rigid_objects_in_focus[env_id][0], :4])
-    bottle_pos_w = torch.stack(bottle_pos_w)
-    bottle_quat_w = torch.stack(bottle_quat_w)
-
-    ee_pos_w = ee_frame.data.target_pos_w[:, 0, :]
-    gripper_to_bottle = bottle_pos_w - ee_pos_w
-
-    return torch.cat(
-        (
-            bottle_pos_w - env.scene.env_origins,
-            bottle_quat_w,
-            gripper_to_bottle,
-        ),
-        dim=1,
-    )
-
-
-def ee_frame_pos(env: ManagerBasedRLEnv, ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame")) -> torch.Tensor:
-    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
-    ee_frame_pos = ee_frame.data.target_pos_w[:, 0, :] - env.scene.env_origins[:, 0:3]
-
-    return ee_frame_pos
-
-
-def ee_frame_quat(env: ManagerBasedRLEnv, ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame")) -> torch.Tensor:
-    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
-    ee_frame_quat = ee_frame.data.target_quat_w[:, 0, :]
-
-    return ee_frame_quat
-
-
-def gripper_pos(env: ManagerBasedRLEnv, robot_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
-    robot: Articulation = env.scene[robot_cfg.name]
-    finger_joint_1 = robot.data.joint_pos[:, -1].clone().unsqueeze(1)
-    finger_joint_2 = -1 * robot.data.joint_pos[:, -2].clone().unsqueeze(1)
-
-    return torch.cat((finger_joint_1, finger_joint_2), dim=1)
-
+    return asset.data.joint_vel[:, joint_ids] - asset.data.default_joint_vel[:, joint_ids]
 
 def object_grasped(
     env: ManagerBasedRLEnv,

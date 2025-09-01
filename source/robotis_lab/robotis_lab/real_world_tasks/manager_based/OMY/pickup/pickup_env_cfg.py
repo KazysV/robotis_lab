@@ -92,8 +92,16 @@ class ObservationsCfg:
         """Observations for policy group with state values."""
 
         actions = ObsTerm(func=mdp.last_action)
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel)
-        joint_vel = ObsTerm(func=mdp.joint_vel_rel)
+        joint_pos = ObsTerm(
+            func=mdp.joint_pos_rel_name,
+            params={"joint_names": ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"],
+                    "asset_name": "robot"},
+        )
+        joint_vel = ObsTerm(
+            func=mdp.joint_vel_rel_name,
+            params={"joint_names": ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"],
+                    "asset_name": "robot"},
+        )
         cam_wrist = ObsTerm(
             func=mdp.image,
             params={"sensor_cfg": SceneEntityCfg("cam_wrist"), "data_type": "rgb", "normalize": False},
