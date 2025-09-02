@@ -42,24 +42,6 @@ This project provides simulation environments, configuration tools, and task def
 
 ## Try examples
 
-> [!NOTE]
-> If you want to control a **SINGLE ROBOT** with the keyboard during playback, add `--keyboard` at the end of the play script.
->
-> ```
-> Key bindings:
-> =========================== =========================
-> Command                     Key
-> =========================== =========================
-> Toggle gripper (open/close) K      
-> Move arm along x-axis       W / S   
-> Move arm along y-axis       A / D
-> Move arm along z-axis       Q / E
-> Rotate arm along x-axis     Z / X
-> Rotate arm along y-axis     T / G
-> Rotate arm along z-axis     C / V
-> =========================== =========================
-> ```
-
 ### Reinforcement learning
 
 OMY Reach task
@@ -103,6 +85,24 @@ python scripts/reinforcement_learning/rsl_rl/play.py --task RobotisLab-Reach-FFW
 ```
 
 ### Imitation learning
+
+> [!NOTE]
+> If you want to control a **SINGLE ROBOT** with the keyboard during playback, add `--keyboard` at the end of the play script.
+>
+> ```
+> Key bindings:
+> =========================== =========================
+> Command                     Key
+> =========================== =========================
+> Toggle gripper (open/close) K      
+> Move arm along x-axis       W / S   
+> Move arm along y-axis       A / D
+> Move arm along z-axis       Q / E
+> Rotate arm along x-axis     Z / X
+> Rotate arm along y-axis     T / G
+> Rotate arm along z-axis     C / V
+> =========================== =========================
+> ```
 
 OMY Stack task (Stack the blocks in the following order: blue → red → green.)
 
@@ -155,8 +155,8 @@ python scripts/imitation_learning/robomimic/play.py \
 ```
 
 ## Sim2Real Deployment
-We provide a Sim2Real pipeline to deploy policies trained in Isaac Lab simulation directly onto the real OMY robot.
 
+### Reinforcement learning
 <details>
 <summary>🎥 Show demo video</summary>
 
