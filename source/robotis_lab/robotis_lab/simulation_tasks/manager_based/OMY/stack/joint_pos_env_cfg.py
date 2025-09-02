@@ -98,9 +98,9 @@ class OMYCubeStackEnvCfg(StackEnvCfg):
         )
         self.actions.gripper_action = mdp.BinaryJointPositionActionCfg(
             asset_name="robot",
-            joint_names=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
-            open_command_expr={"rh_.*": 0.0},
-            close_command_expr={"rh_.*": 0.8},
+            joint_names=["rh_r1_joint"],
+            open_command_expr={"rh_r1_joint": 0.0},
+            close_command_expr={"rh_r1_joint": 0.8},
         )
 
         # Rigid body properties of each cube

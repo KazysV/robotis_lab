@@ -54,9 +54,9 @@ class OMYCabinetEnvCfg(CabinetEnvCfg):
         )
         self.actions.gripper_action = mdp.BinaryJointPositionActionCfg(
             asset_name="robot",
-            joint_names=["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"],
-            open_command_expr={"rh_.*": 0.0},
-            close_command_expr={"rh_.*": 1.2},
+            joint_names=["rh_r1_joint"],
+            open_command_expr={"rh_r1_joint": 0.0},
+            close_command_expr={"rh_r1_joint": 1.2},
         )
 
         # Listens to the required transforms
@@ -94,7 +94,7 @@ class OMYCabinetEnvCfg(CabinetEnvCfg):
         # override rewards
         self.rewards.approach_gripper_handle.params["offset"] = 0.0567
         self.rewards.grasp_handle.params["open_joint_pos"] = 0.0
-        self.rewards.grasp_handle.params["asset_cfg"].joint_names = ["rh_l1", "rh_l2", "rh_r1_joint", "rh_r2"]
+        self.rewards.grasp_handle.params["asset_cfg"].joint_names = ["rh_r1_joint"]
 
 
 @configclass
