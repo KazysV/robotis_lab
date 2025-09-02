@@ -28,7 +28,7 @@ OMY_CFG = ArticulationCfg(
             max_depenetration_velocity=5.0,
         ),
         articulation_props=sim_utils.ArticulationRootPropertiesCfg(
-            enabled_self_collisions=False,
+            enabled_self_collisions=True,
             solver_position_iteration_count=8,
             solver_velocity_iteration_count=1,
         ),
@@ -107,4 +107,14 @@ OMY_HIGH_PD_CFG = OMY_CFG.replace(
             damping=100.0,
         ),
     }
+)
+
+OMY_SELF_COLLISION_OFF_CFG = OMY_CFG.replace(
+    spawn=OMY_CFG.spawn.replace(
+        articulation_props=OMY_CFG.spawn.articulation_props.replace(
+            enabled_self_collisions=False,
+        ),
+    ),
+    init_state=OMY_CFG.init_state,
+    actuators=OMY_CFG.actuators,
 )

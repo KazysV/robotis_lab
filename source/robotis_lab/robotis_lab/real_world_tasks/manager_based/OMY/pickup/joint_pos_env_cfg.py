@@ -38,7 +38,7 @@ from robotis_lab.real_world_tasks.manager_based.OMY.pickup.pickup_env_cfg import
 # Pre-defined configs
 ##
 from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
-from robotis_lab.assets.robots.OMY import OMY_CFG  # isort: skip
+from robotis_lab.assets.robots.OMY import OMY_SELF_COLLISION_OFF_CFG  # isort: skip
 from robotis_lab.assets.object.robotis_omy_table import OMY_TABLE_CFG
 from robotis_lab.assets.object.plastic_bottle import PLASTIC_BOTTLE_CFG
 
@@ -113,7 +113,7 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
         self.events = EventCfg()
 
         # Set OMY as robot
-        self.scene.robot = OMY_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = OMY_SELF_COLLISION_OFF_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.spawn.semantic_tags = [("class", "robot")]
 
         # Set actions for the specific robot type (OMY)
