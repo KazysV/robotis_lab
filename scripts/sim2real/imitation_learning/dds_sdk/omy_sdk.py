@@ -13,8 +13,7 @@ from robotis_python_sdk.idl.sensor_msgs.msg import CompressedImage_
 from robotis_python_sdk.idl.std_msgs.msg import Header_
 from robotis_python_sdk.idl.builtin_interfaces.msg import Time_
 
-from robotis_python_sdk.tools.topic_writer import topic_writer
-from robotis_python_sdk.tools.topic_reader import topic_reader
+from robotis_python_sdk.tools.topic_manager import TopicManager
 
 class OMYSdk:
     """OMYSdk class for DDS teleoperation + publishing state/image."""
@@ -26,33 +25,31 @@ class OMYSdk:
         self.domain_id = int(os.getenv("ROS_DOMAIN_ID", 0))
         self.mode = mode  # 'record' or 'inference'
 
+        topic_manager = TopicManager(domain_id=self.domain_id)
+
         # Joint names
         self.joint_names = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"]
         self.exclude_joints = []
 
         # Subscriber (leader input)
-        self.joint_trajectory_reader = topic_reader(
-            domain_id=self.domain_id,
+        self.joint_trajectory_reader = topic_manager.topic_reader(
             topic_name="leader/joint_trajectory",
             topic_type=JointTrajectory_
         )
 
 
         # Publishers (state + camera)
-        self.joint_state_writer = topic_writer(
-            domain_id=self.domain_id,
+        self.joint_state_writer = topic_manager.topic_writer(
             topic_name="joint_states",
             topic_type=JointState_
         )
 
-        self.top_cam_writer = topic_writer(
-            domain_id=self.domain_id,
+        self.top_cam_writer = topic_manager.topic_writer(
             topic_name="camera/cam_top/color/image_rect_raw/compressed",
             topic_type=CompressedImage_
         )
 
-        self.wrist_cam_writer = topic_writer(
-            domain_id=self.domain_id,
+        self.wrist_cam_writer = topic_manager.topic_writer(
             topic_name="camera/cam_wrist/color/image_rect_raw/compressed",
             topic_type=CompressedImage_
         )
