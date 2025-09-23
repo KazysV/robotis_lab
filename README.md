@@ -112,7 +112,7 @@ python scripts/reinforcement_learning/rsl_rl/play.py --task RobotisLab-Reach-FFW
 OMY Stack task (Stack the blocks in the following order: blue → red → green.)
 
 ```bash
-# Teleop
+# Teleop and record
 python scripts/imitation_learning/isaaclab_recorder/record_demos.py --task RobotisLab-Stack-Cube-OMY-IK-Rel-v0 --teleop_device keyboard --dataset_file ./datasets/dataset.hdf5 --num_demos 10
 
 # Annotate
@@ -137,7 +137,7 @@ python scripts/imitation_learning/robomimic/play.py \
 FFW-BG2 Pick and Place Task (Move the red stick into the basket.)
 
 ```bash
-# Teleop
+# Teleop and record
 python scripts/tools/record_demos.py --task RobotisLab-PickPlace-FFW-BG2-IK-Rel-v0 --teleop_device keyboard --dataset_file ./datasets/dataset.hdf5 --num_demos 10 --enable_cameras
 
 # Annotate
@@ -197,4 +197,47 @@ Replace <2025-07-10_08-47-09> with the actual timestamp folder name under:
 ```bash
 logs/rsl_rl/reach_omy/
 ```
+</details>
+
+<details>
+<summary>Imitation learning</summary>
+
+```bash
+
+# install
+pip install lerobot
+
+# Teleop and record
+python scripts/sim2real/imitation_learning/recorder/record_demos.py --task=RobotisLab-Real-Pickup-Bottle-OMY-v0 --robot_type OMY --dataset_file ./datasets/omy_pickup_task.hdf5 --num_demos 30 --enable_cameras
+
+```
+
+<details>
+<summary>[Option] Mimic generate dataset</summary>
+
+```bash
+
+# Data convert ee_pose action from joint action
+python scripts/sim2real/imitation_learning/mimic/action_data_converter.py --input_file ./datasets/omy_pickup_task.hdf5 --output_file ./datasets/processed_omy_pickup_task.hdf5 --action_type ik
+
+# Annotate dataset
+python scripts/sim2real/imitation_learning/mimic/annotate_demos.py --task RobotisLab-Real-Mimic-Pickup-Bottle-OMY-v0 --auto --input_file ./datasets/processed_omy_pickup_task.hdf5 --output_file ./datasets/annotated_dataset.hdf5 --enable_cameras --headless
+
+# Generate dataset
+python scripts/sim2real/imitation_learning/mimic/generate_dataset.py --device cuda --num_envs 30 --task RobotisLab-Real-Mimic-Pickup-Bottle-OMY-v0 --generation_num_trials 1000 --input_file ./datasets/annotated_dataset.hdf5 --output_file ./datasets/generated_dataset.hdf5 --enable_cameras --headless
+
+# Data convert joint action from ee_pose action
+python scripts/sim2real/imitation_learning/mimic/action_data_converter.py --input_file ./datasets/generated_dataset.hdf5 --output_file ./datasets/processed_generated_dataset.hdf5 --action_type joint
+
+```
+
+</details>
+
+```bash
+
+# Data convert lerobot dataset from IsaacLab hdf dataset
+python scripts/sim2real/imitation_learning/data_converter/OMY/isaaclab2lerobot.py --task=RobotisLab-Real-Pickup-Bottle-OMY-v0 --robot_type OMY --dataset_file ./datasets/<processed_omy_pickup_task.hdf5> or <processed_generated_dataset.hdf5>
+
+```
+
 </details>

@@ -64,7 +64,7 @@ OMY_CFG = ArticulationCfg(
             joint_names_expr=["rh_r1_joint"],
             velocity_limit_sim=6.0,
             effort_limit_sim=30.0,
-            stiffness=10.0,
+            stiffness=20.0,
             damping=5.0,
         ),
     },

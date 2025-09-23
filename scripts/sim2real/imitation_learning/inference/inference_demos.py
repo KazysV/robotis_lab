@@ -67,6 +67,7 @@ class RateLimiter:
 def main():
     # env config
     env_cfg = parse_env_cfg(args_cli.task, device=args_cli.device, num_envs=1)
+    env_cfg.init_action_cfg("inference")
     env_cfg.seed = args_cli.seed
 
     # create env

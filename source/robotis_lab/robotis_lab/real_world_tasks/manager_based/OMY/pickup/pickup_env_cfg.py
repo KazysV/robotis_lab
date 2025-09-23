@@ -194,7 +194,7 @@ class PickupEnvCfg(ManagerBasedRLEnvCfg):
 
     def init_action_cfg(self, mode: str):
         print(f"Initializing action configuration for device: {mode}")
-        if mode in ['record']:
+        if mode in ['record', 'inference']:
             self.actions.arm_action = mdp.JointPositionActionCfg(
                 asset_name="robot",
                 joint_names=["joint.*"],

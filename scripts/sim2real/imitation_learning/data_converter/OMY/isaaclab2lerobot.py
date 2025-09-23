@@ -12,8 +12,8 @@ from datetime import datetime
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
 
 CAMERA_CONFIG = {
-    "cam_wrist": {"height": 240, "width": 424},
-    "cam_top": {"height": 240, "width": 424},
+    "cam_wrist": {"height": 480, "width": 848},
+    "cam_top": {"height": 480, "width": 848},
 }
 
 def get_env_features(fps: int, camera_config=CAMERA_CONFIG):
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     parser.add_argument("--dataset_file", type=str, default="./datasets/dataset.hdf5", help="Path to dataset HDF5 file")
     parser.add_argument("--fps", type=int, default=30, help="Frames per second for dataset (default: 30)")
     parser.add_argument("--push_to_hub", action="store_true", help="Whether to push dataset to HuggingFace Hub")
-    parser.add_argument("--frame_skip", type=int, default=3, help="Frame skip rate (default: 3)")
+    parser.add_argument("--frame_skip", type=int, default=2, help="Frame skip rate (default: 2)")
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     default_repo_id = f"data/{timestamp}"
