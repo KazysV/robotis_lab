@@ -34,3 +34,4 @@ __version__ = ROBOTIS_LAB_OBJECT_ASSETS_METADATA["package"]["version"]
 
 from .robotis_omy_table import *
 from .plastic_bottle import *
+from .plastic_basket import *

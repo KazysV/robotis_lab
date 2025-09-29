@@ -41,9 +41,11 @@ from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
 from robotis_lab.assets.robots.OMY import OMY_CFG  # isort: skip
 from robotis_lab.assets.object.robotis_omy_table import OMY_TABLE_CFG
 from robotis_lab.assets.object.plastic_bottle import PLASTIC_BOTTLE_CFG
+from robotis_lab.assets.object.plastic_basket import PLASTIC_BASKET_CFG
 
 from . import mdp
 
+import math
 @configclass
 class EventCfg:
     """Configuration for events."""
@@ -70,9 +72,19 @@ class EventCfg:
         func=omy_pickup_events.randomize_object_pose,
         mode="reset",
         params={
-            "pose_range": {"x": (0.25, 0.3), "y": (-0.07, 0.08), "z": (0.015, 0.015), "yaw": (-0.30, 0.30)},
+            "pose_range": {"x": (0.2, 0.25), "y": (0.05, 0.15), "z": (0.015, 0.015), "yaw": (-math.pi/2-0.30, -math.pi/2+0.30)},
             "min_separation": 0.1,
             "asset_cfgs": [SceneEntityCfg("bottle")],
+        },
+    )
+
+    randomize_basket_positions = EventTerm(
+        func=omy_pickup_events.randomize_object_pose,
+        mode="reset",
+        params={
+            "pose_range": {"x": (0.22, 0.24), "y": (-0.28, -0.26), "z": (0.015, 0.015), "roll": (-math.pi/2, -math.pi/2), "pitch": (math.pi, math.pi), "yaw": (0.0, 0.0)},
+            "min_separation": 0.1,
+            "asset_cfgs": [SceneEntityCfg("basket")],
         },
     )
 
@@ -120,6 +132,8 @@ class OMYBottlePickupEnvCfg(PickupEnvCfg):
         self.scene.table = OMY_TABLE_CFG.replace(prim_path="{ENV_REGEX_NS}/Table")
 
         self.scene.bottle = PLASTIC_BOTTLE_CFG.replace(prim_path="{ENV_REGEX_NS}/Bottle")
+
+        self.scene.basket = PLASTIC_BASKET_CFG.replace(prim_path="{ENV_REGEX_NS}/Basket")
 
         # Add semantics to ground
         self.scene.plane.semantic_tags = [("class", "ground")]

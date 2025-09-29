@@ -238,6 +238,9 @@ python scripts/sim2real/imitation_learning/mimic/action_data_converter.py --inpu
 # Data convert lerobot dataset from IsaacLab hdf dataset
 python scripts/sim2real/imitation_learning/data_converter/OMY/isaaclab2lerobot.py --task=RobotisLab-Real-Pickup-Bottle-OMY-v0 --robot_type OMY --dataset_file ./datasets/<processed_omy_pickup_task.hdf5> or <processed_generated_dataset.hdf5>
 
+# inference
+python scripts/sim2real/imitation_learning/inference/inference_demos.py --task RobotisLab-Real-Pickup-Bottle-OMY-v0 --robot_type OMY --enable_cameras
+
 ```
 
 </details>
