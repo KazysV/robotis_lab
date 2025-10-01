@@ -134,6 +134,14 @@ class ObservationsCfg:
                 "object_cfg": SceneEntityCfg("bottle"),
             },
         )
+        
+        bottle_in_basket = ObsTerm(
+            func=mdp.bottle_in_basket,
+            params={
+                "bottle_cfg": SceneEntityCfg("bottle"),
+                "basket_cfg": SceneEntityCfg("basket"),
+            },
+        )
 
         def __post_init__(self):
             self.enable_corruption = False
@@ -151,7 +159,7 @@ class TerminationsCfg:
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
 
     success = DoneTerm(
-        func=mdp.task_done, params={"bottle_cfg": SceneEntityCfg("bottle"), "yaw_threshold": 0.3}
+        func=mdp.task_done, params={"bottle_cfg": SceneEntityCfg("bottle"), "basket_cfg": SceneEntityCfg("basket"), "distance_threshold": 0.1}
     )
 
     bottle_dropping = DoneTerm(
@@ -159,8 +167,8 @@ class TerminationsCfg:
     )
 
 @configclass
-class PickupEnvCfg(ManagerBasedRLEnvCfg):
-    """Configuration for the pickuping environment."""
+class PickPlaceEnvCfg(ManagerBasedRLEnvCfg):
+    """Configuration for the pick and place environment."""
 
     # Scene settings
     scene: ObjectTableSceneCfg = ObjectTableSceneCfg(num_envs=4096, env_spacing=2.5, replicate_physics=False)

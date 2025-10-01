@@ -22,4 +22,4 @@
 """OMY environments for fixed-arm robots."""
 
 import gymnasium as gym
-from .pickup import *  # noqa
+from .pick_place import *  # noqa

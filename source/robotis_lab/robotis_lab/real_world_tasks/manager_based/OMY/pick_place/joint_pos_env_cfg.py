@@ -31,8 +31,8 @@ from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from isaaclab.sensors import CameraCfg
 
-from robotis_lab.real_world_tasks.manager_based.OMY.pickup.mdp import omy_pickup_events
-from robotis_lab.real_world_tasks.manager_based.OMY.pickup.pickup_env_cfg import PickupEnvCfg
+from robotis_lab.real_world_tasks.manager_based.OMY.pick_place.mdp import omy_pick_place_events
+from robotis_lab.real_world_tasks.manager_based.OMY.pick_place.pick_place_env_cfg import PickPlaceEnvCfg
 
 ##
 # Pre-defined configs
@@ -51,7 +51,7 @@ class EventCfg:
     """Configuration for events."""
 
     init_omy_arm_pose = EventTerm(
-        func=omy_pickup_events.set_default_joint_pose,
+        func=omy_pick_place_events.set_default_joint_pose,
         mode="reset",
         params={
             "default_pose": [0.0, -1.55, 2.66, -1.1, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -59,7 +59,7 @@ class EventCfg:
     )
 
     randomize_omy_joint_state = EventTerm(
-        func=omy_pickup_events.randomize_joint_by_gaussian_offset,
+        func=omy_pick_place_events.randomize_joint_by_gaussian_offset,
         mode="reset",
         params={
             "mean": 0.0,
@@ -69,17 +69,17 @@ class EventCfg:
     )
 
     randomize_bottle_positions = EventTerm(
-        func=omy_pickup_events.randomize_object_pose,
+        func=omy_pick_place_events.randomize_object_pose,
         mode="reset",
         params={
-            "pose_range": {"x": (0.2, 0.25), "y": (0.05, 0.15), "z": (0.015, 0.015), "yaw": (-math.pi/2-0.30, -math.pi/2+0.30)},
+            "pose_range": {"x": (0.25, 0.3), "y": (0.05, 0.15), "z": (0.015, 0.015), "yaw": (-math.pi/2-0.50, -math.pi/2+0.50)},
             "min_separation": 0.1,
             "asset_cfgs": [SceneEntityCfg("bottle")],
         },
     )
 
     randomize_basket_positions = EventTerm(
-        func=omy_pickup_events.randomize_object_pose,
+        func=omy_pick_place_events.randomize_object_pose,
         mode="reset",
         params={
             "pose_range": {"x": (0.22, 0.24), "y": (-0.28, -0.26), "z": (0.015, 0.015), "roll": (-math.pi/2, -math.pi/2), "pitch": (math.pi, math.pi), "yaw": (0.0, 0.0)},
@@ -89,7 +89,7 @@ class EventCfg:
     )
 
     randomize_scene_light = EventTerm(
-        func=omy_pickup_events.randomize_scene_lighting_domelight,
+        func=omy_pick_place_events.randomize_scene_lighting_domelight,
         mode="reset",
         params={
             "intensity_range": (1000.0, 3000.0),
@@ -99,7 +99,7 @@ class EventCfg:
     )
 
     randomize_top_camera = EventTerm(
-        func=omy_pickup_events.randomize_camera_pose,
+        func=omy_pick_place_events.randomize_camera_pose,
         mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("cam_top"),
@@ -116,7 +116,7 @@ class EventCfg:
     )
 
 @configclass
-class OMYBottlePickupEnvCfg(PickupEnvCfg):
+class OMYBottlePickPlaceEnvCfg(PickPlaceEnvCfg):
     def __post_init__(self):
         # post init of parent
         super().__post_init__()

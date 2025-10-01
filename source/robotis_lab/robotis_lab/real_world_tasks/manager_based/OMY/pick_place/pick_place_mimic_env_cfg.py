@@ -22,18 +22,18 @@
 from isaaclab.envs.mimic_env_cfg import MimicEnvCfg, SubTaskConfig
 from isaaclab.utils import configclass
 
-from .joint_pos_env_cfg import OMYBottlePickupEnvCfg
+from .joint_pos_env_cfg import OMYBottlePickPlaceEnvCfg
 
 @configclass
-class OMYPickupMimicEnvCfg(OMYBottlePickupEnvCfg, MimicEnvCfg):
+class OMYPickPlaceMimicEnvCfg(OMYBottlePickPlaceEnvCfg, MimicEnvCfg):
     """
-    Configuration for the pickup task with mimic environment.
+    Configuration for the pick_place task with mimic environment.
     """
 
     def __post_init__(self):
         super().__post_init__()
 
-        self.datagen_config.name = "pickup_bottle_task_v0"
+        self.datagen_config.name = "pick_and_place_the_bottle_in_the_basket"
         self.datagen_config.generation_guarantee = True
         self.datagen_config.generation_keep_failed = True
         self.datagen_config.generation_num_trials = 10
@@ -46,8 +46,9 @@ class OMYPickupMimicEnvCfg(OMYBottlePickupEnvCfg, MimicEnvCfg):
 
         subtask_configs = []
         """
-        subtask: pick_bottle -> lift_bottle -> place_bottle
+        subtask: pick_bottle -> place_bottle_in_basket
         """
+        # First subtask: Grasp the bottle
         subtask_configs.append(
             SubTaskConfig(
                 # Each subtask involves manipulation with respect to a single object frame.
@@ -71,7 +72,23 @@ class OMYPickupMimicEnvCfg(OMYBottlePickupEnvCfg, MimicEnvCfg):
                 # If True, apply action noise during the interpolation phase and execution
                 apply_noise_during_interpolation=False,
                 description="Grasp bottle",
-                next_subtask_description="Lift bottle",
+                next_subtask_description="Place bottle in basket",
+            )
+        )
+        # Second subtask: Place bottle in basket
+        subtask_configs.append(
+            SubTaskConfig(
+                object_ref="basket",
+                subtask_term_signal="bottle_in_basket",
+                subtask_term_offset_range=(5, 15),
+                selection_strategy="nearest_neighbor_object",
+                selection_strategy_kwargs={"nn_k": 3},
+                action_noise=0.001,
+                num_interpolation_steps=10,
+                num_fixed_steps=0,
+                apply_noise_during_interpolation=False,
+                description="Place bottle in basket",
+                next_subtask_description="Task complete",
             )
         )
         subtask_configs.append(

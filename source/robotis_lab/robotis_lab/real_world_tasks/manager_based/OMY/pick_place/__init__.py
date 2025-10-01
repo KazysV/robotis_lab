@@ -26,19 +26,19 @@ import gymnasium as gym
 ##
 
 gym.register(
-    id="RobotisLab-Real-Pickup-Bottle-OMY-v0",
+    id="RobotisLab-Real-Pick-Place-Bottle-OMY-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.joint_pos_env_cfg:OMYBottlePickupEnvCfg",
+        "env_cfg_entry_point": f"{__name__}.joint_pos_env_cfg:OMYBottlePickPlaceEnvCfg",
     },
     disable_env_checker=True,
 )
 
 gym.register(
-    id="RobotisLab-Real-Mimic-Pickup-Bottle-OMY-v0",
-    entry_point="robotis_lab.real_world_tasks.manager_based.OMY.pickup.pickup_mimic_env:OMYPickupMimicEnv",
+    id="RobotisLab-Real-Mimic-Pick-Place-Bottle-OMY-v0",
+    entry_point="robotis_lab.real_world_tasks.manager_based.OMY.pick_place.pick_place_mimic_env:OMYPickPlaceMimicEnv",
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.pickup_mimic_env_cfg:OMYPickupMimicEnvCfg",
+        "env_cfg_entry_point": f"{__name__}.pick_place_mimic_env_cfg:OMYPickPlaceMimicEnvCfg",
     },
     disable_env_checker=True,
 )
