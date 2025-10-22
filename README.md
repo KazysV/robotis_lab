@@ -91,7 +91,7 @@ python scripts/reinforcement_learning/rsl_rl/play.py --task RobotisLab-Reach-FFW
 <details>
 <summary>Imitation learning</summary>
 
-> [!NOTE]
+>
 > If you want to control a **SINGLE ROBOT** with the keyboard during playback, add `--keyboard` at the end of the play script.
 >
 > ```
@@ -172,9 +172,12 @@ https://github.com/user-attachments/assets/6c27bdb1-3a6b-4686-a546-8f14f01e4abe
 
 
 >
-> **Important:**
-> More on OMY Hardware Setup:
-> For details on how to set up and operate the OMY robot, please refer to the [open_manipulator repo](https://github.com/ROBOTIS-GIT/open_manipulator.git)
+> **Important**
+>
+> OMY Hardware Setup:
+> To run Sim2Real with the real OMY robot, you need to bring up the robot.
+>
+> This can be done using ROBOTIS’s [open_manipulator repository](https://github.com/ROBOTIS-GIT/open_manipulator.git).
 > 
 > In this pipeline:
 > - The trained policy (exported as a TorchScript .pt file) is executed on the real robot using ROS 2.
@@ -207,9 +210,9 @@ logs/rsl_rl/reach_omy/
 <summary>Imitation learning</summary>
 
 >
-> **Important:**
+> **Important**
 > 
-> For simulator-to-robot (Leader) communication:
+> For real world leader to simulator communication:
 > You must install **robotis_dds_python**, which is required to synchronize the simulated robot with the real Leader using DDS communication.  
 > [robotis_dds_python GitHub Repository](https://github.com/ROBOTIS-GIT/robotis_dds_python)
 
@@ -254,8 +257,13 @@ python scripts/sim2real/imitation_learning/mimic/action_data_converter.py --inpu
 python scripts/sim2real/imitation_learning/data_converter/OMY/isaaclab2lerobot.py --task=RobotisLab-Real-Pick-Place-Bottle-OMY-v0 --robot_type OMY --dataset_file ./datasets/<processed_omy_pick_place_task.hdf5> or <processed_generated_dataset.hdf5>
 
 ```
-# inference mode
+
+```bash
+
+# Inference in simulation
 python scripts/sim2real/imitation_learning/inference/inference_demos.py --task RobotisLab-Real-Pick-Place-Bottle-OMY-v0 --robot_type OMY --enable_cameras
+
+```
 
 
 </details>
