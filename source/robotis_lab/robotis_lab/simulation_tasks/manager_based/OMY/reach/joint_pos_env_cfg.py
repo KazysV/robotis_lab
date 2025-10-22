@@ -29,7 +29,7 @@ from isaaclab.managers import SceneEntityCfg
 ##
 # Pre-defined configs
 ##
-from robotis_lab.assets.robots.OMY import OMY_CFG  # isort: skip
+from robotis_lab.assets.robots.OMY import OMY_OFF_SELF_COLLISION_CFG  # isort: skip
 
 
 ##
@@ -44,7 +44,7 @@ class OMYReachEnvCfg(ReachEnvCfg):
         super().__post_init__()
 
         # switch robot to OMY robot
-        self.scene.robot = OMY_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = OMY_OFF_SELF_COLLISION_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         # override events
         self.events.reset_robot_joints.params["position_range"] = (0.75, 1.25)
         # override rewards

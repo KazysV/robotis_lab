@@ -71,6 +71,14 @@ OMY_CFG = ArticulationCfg(
 )
 """Configuration of OMY arm using implicit actuator models."""
 
+OMY_OFF_SELF_COLLISION_CFG = OMY_CFG.replace(
+    spawn=OMY_CFG.spawn.replace(
+        articulation_props=OMY_CFG.spawn.articulation_props.replace(
+            enabled_self_collisions=False,
+        )
+    )
+)
+
 OMY_HIGH_PD_CFG = OMY_CFG.replace(
     spawn=OMY_CFG.spawn,
     init_state=ArticulationCfg.InitialStateCfg(
