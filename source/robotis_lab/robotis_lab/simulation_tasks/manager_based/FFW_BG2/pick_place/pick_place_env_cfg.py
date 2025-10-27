@@ -47,7 +47,7 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
         prim_path="/World/envs/env_.*/PackingTable",
         init_state=AssetBaseCfg.InitialStateCfg(
             pos=[2.70, -0.1, 0.0],
-            rot = [-0.70710678, 0.0, 0.0, 0.70710678]
+            rot=[-0.70710678, 0.0, 0.0, 0.70710678]
         ),
         spawn=UsdFileCfg(
             usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/PackingTable/packing_table.usd",
@@ -156,6 +156,7 @@ class TerminationsCfg:
     object_fallen_over = DoneTerm(func=mdp.object_fallen_over)
 
     success = DoneTerm(func=mdp.task_done)
+
 
 @configclass
 class PickPlaceEnvCfg(ManagerBasedRLEnvCfg):

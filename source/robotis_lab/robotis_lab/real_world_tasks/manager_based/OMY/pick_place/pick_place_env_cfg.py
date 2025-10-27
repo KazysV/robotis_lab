@@ -75,6 +75,8 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
 ##
 # MDP settings
 ##
+
+
 @configclass
 class ActionsCfg:
     """Action specifications for the MDP."""
@@ -115,8 +117,8 @@ class ObservationsCfg:
         )
         ee_frame_state = ObsTerm(func=mdp.ee_frame_state, params={"ee_frame_cfg": SceneEntityCfg("ee_frame"), "robot_cfg": SceneEntityCfg("robot")})
         joint_pos_target = ObsTerm(func=mdp.joint_pos_target_name,
-            params={"joint_names": ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"],
-                    "asset_name": "robot"},)
+                                   params={"joint_names": ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"],
+                                           "asset_name": "robot"},)
 
         def __post_init__(self):
             self.enable_corruption = False
@@ -134,7 +136,7 @@ class ObservationsCfg:
                 "object_cfg": SceneEntityCfg("bottle"),
             },
         )
-        
+
         bottle_in_basket = ObsTerm(
             func=mdp.bottle_in_basket,
             params={
@@ -165,6 +167,7 @@ class TerminationsCfg:
     bottle_dropping = DoneTerm(
         func=mdp.root_height_below_minimum, params={"minimum_height": -0.05, "asset_cfg": SceneEntityCfg("bottle")}
     )
+
 
 @configclass
 class PickPlaceEnvCfg(ManagerBasedRLEnvCfg):
@@ -217,15 +220,15 @@ class PickPlaceEnvCfg(ManagerBasedRLEnvCfg):
             )
         elif mode in ['mimic_ik']:
             self.actions.arm_action = DifferentialInverseKinematicsActionCfg(
-            asset_name="robot",
-            joint_names=["joint[1-6]"],
-            body_name="link6",
-            controller=DifferentialIKControllerCfg(
-                command_type="pose", ik_params={"lambda_val": 0.05},
-                ik_method="dls",
-                use_relative_mode=False
-            ),
-            body_offset=DifferentialInverseKinematicsActionCfg.OffsetCfg(pos=[0.0, -0.248, 0.0]),
+                asset_name="robot",
+                joint_names=["joint[1-6]"],
+                body_name="link6",
+                controller=DifferentialIKControllerCfg(
+                    command_type="pose", ik_params={"lambda_val": 0.05},
+                    ik_method="dls",
+                    use_relative_mode=False
+                ),
+                body_offset=DifferentialInverseKinematicsActionCfg.OffsetCfg(pos=[0.0, -0.248, 0.0]),
             )
             self.actions.gripper_action = mdp.JointPositionActionCfg(
                 asset_name="robot",
@@ -236,4 +239,3 @@ class PickPlaceEnvCfg(ManagerBasedRLEnvCfg):
         else:
             self.actions.arm_action = None
             self.actions.gripper_action = None
-

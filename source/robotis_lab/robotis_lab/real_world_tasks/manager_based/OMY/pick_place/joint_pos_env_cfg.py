@@ -46,6 +46,8 @@ from robotis_lab.assets.object.plastic_basket import PLASTIC_BASKET_CFG
 from . import mdp
 
 import math
+
+
 @configclass
 class EventCfg:
     """Configuration for events."""
@@ -72,7 +74,7 @@ class EventCfg:
         func=omy_pick_place_events.randomize_object_pose,
         mode="reset",
         params={
-            "pose_range": {"x": (0.25, 0.3), "y": (0.05, 0.15), "z": (0.015, 0.015), "yaw": (-math.pi/2-0.50, -math.pi/2+0.50)},
+            "pose_range": {"x": (0.25, 0.3), "y": (0.05, 0.15), "z": (0.015, 0.015), "yaw": (-math.pi / 2 - 0.50, -math.pi / 2 + 0.50)},
             "min_separation": 0.1,
             "asset_cfgs": [SceneEntityCfg("bottle")],
         },
@@ -82,7 +84,7 @@ class EventCfg:
         func=omy_pick_place_events.randomize_object_pose,
         mode="reset",
         params={
-            "pose_range": {"x": (0.22, 0.24), "y": (-0.28, -0.26), "z": (0.015, 0.015), "roll": (-math.pi/2, -math.pi/2), "pitch": (math.pi, math.pi), "yaw": (0.0, 0.0)},
+            "pose_range": {"x": (0.22, 0.24), "y": (-0.28, -0.26), "z": (0.015, 0.015), "roll": (-math.pi / 2, -math.pi / 2), "pitch": (math.pi, math.pi), "yaw": (0.0, 0.0)},
             "min_separation": 0.1,
             "asset_cfgs": [SceneEntityCfg("basket")],
         },
@@ -114,6 +116,7 @@ class EventCfg:
             "convention": "ros",
         },
     )
+
 
 @configclass
 class OMYBottlePickPlaceEnvCfg(PickPlaceEnvCfg):

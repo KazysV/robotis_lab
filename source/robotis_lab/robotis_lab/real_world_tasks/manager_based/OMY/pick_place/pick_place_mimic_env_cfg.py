@@ -24,6 +24,7 @@ from isaaclab.utils import configclass
 
 from .joint_pos_env_cfg import OMYBottlePickPlaceEnvCfg
 
+
 @configclass
 class OMYPickPlaceMimicEnvCfg(OMYBottlePickPlaceEnvCfg, MimicEnvCfg):
     """

@@ -59,9 +59,11 @@ class EventCfg:
     #     },
     # )
 
+
 @configclass
 class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
     """Configuration for the FFW_BG2 environment."""
+
     def __post_init__(self):
         # post init of parent
         super().__post_init__()

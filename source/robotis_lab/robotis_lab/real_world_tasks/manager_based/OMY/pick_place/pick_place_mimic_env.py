@@ -15,6 +15,7 @@ class OMYPickPlaceMimicEnv(ManagerBasedRLMimicEnv):
     """
     Isaac Lab Mimic environment wrapper class for OMY Cube Stack IK Rel env.
     """
+
     def __init__(self, cfg: ManagerBasedRLEnvCfg, render_mode: str | None = None, **kwargs):
         super().__init__(cfg, render_mode, **kwargs)
         self.robot_root_pos = self.scene['robot'].data.root_pos_w
@@ -99,4 +100,3 @@ class OMYPickPlaceMimicEnv(ManagerBasedRLMimicEnv):
             signals[term_name] = term_signal[env_ids]
 
         return signals
-    

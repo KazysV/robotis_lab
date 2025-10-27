@@ -8,6 +8,7 @@ from isaaclab.utils import configclass
 
 from .ik_rel_env_cfg import OMYCubeStackEnvCfg
 
+
 @configclass
 class OMYStackMimicEnvCfg(OMYCubeStackEnvCfg, MimicEnvCfg):
     """

@@ -33,6 +33,7 @@ import isaaclab.utils.math as math_utils
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
+
 def ee_frame_state(env: ManagerBasedRLEnv, ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame"), robot_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
     """
     Return the state of the end effector frame in the robot coordinate system.
@@ -48,6 +49,7 @@ def ee_frame_state(env: ManagerBasedRLEnv, ee_frame_cfg: SceneEntityCfg = SceneE
 
     return ee_frame_state
 
+
 def last_action(env: ManagerBasedEnv, action_name: str | None = None) -> torch.Tensor:
     """The last input action to the environment.
 
@@ -58,6 +60,7 @@ def last_action(env: ManagerBasedEnv, action_name: str | None = None) -> torch.T
         return env.action_manager.action
     else:
         return env.action_manager.get_term(action_name).raw_actions
+
 
 def joint_pos_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str = "robot") -> torch.Tensor:
     """
@@ -79,6 +82,7 @@ def joint_pos_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str
 
     return joint_pos
 
+
 def joint_vel_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str = "robot") -> torch.Tensor:
     """
     Returns the relative joint velocities for the specified joint names.
@@ -96,6 +100,7 @@ def joint_vel_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str
     joint_ids = [asset.joint_names.index(name) for name in joint_names]
 
     return asset.data.joint_vel[:, joint_ids]
+
 
 def object_grasped(
     env: ManagerBasedRLEnv,
@@ -122,6 +127,7 @@ def object_grasped(
     )
     return grasped
 
+
 def ee_frame_pos(env: ManagerBasedRLEnv, ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame")) -> torch.Tensor:
     ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
     ee_frame_pos = ee_frame.data.target_pos_w[:, 0, :] - env.scene.env_origins[:, 0:3]
@@ -134,6 +140,7 @@ def ee_frame_quat(env: ManagerBasedRLEnv, ee_frame_cfg: SceneEntityCfg = SceneEn
     ee_frame_quat = ee_frame.data.target_quat_w[:, 0, :]
 
     return ee_frame_quat
+
 
 def joint_pos_target_name(env: ManagerBasedEnv, joint_names: list[str], asset_name: str = "robot") -> torch.Tensor:
     """The joint positions target of the asset.
@@ -149,6 +156,7 @@ def joint_pos_target_name(env: ManagerBasedEnv, joint_names: list[str], asset_na
 
     return joint_pos_target
 
+
 def bottle_in_basket(
     env: ManagerBasedRLEnv,
     bottle_cfg: SceneEntityCfg,
@@ -158,7 +166,7 @@ def bottle_in_basket(
     """Check if the bottle is placed inside the basket."""
     bottle: RigidObject = env.scene[bottle_cfg.name]
     basket: RigidObject = env.scene[basket_cfg.name]
-    
+
     bottle_pos = bottle.data.root_pos_w
     basket_pos = basket.data.root_pos_w
 
@@ -170,7 +178,7 @@ def bottle_in_basket(
     # Assuming basket bottom is at basket_pos z and rim is ~0.1m higher
     basket_bottom = basket_pos[:, 2]
     basket_rim = basket_pos[:, 2] + 0.1  # Adjust based on actual basket height
-    
+
     vertical_ok = (bottle_pos[:, 2] > basket_bottom) & (bottle_pos[:, 2] < basket_rim)
 
     in_basket = horizontal_ok & vertical_ok

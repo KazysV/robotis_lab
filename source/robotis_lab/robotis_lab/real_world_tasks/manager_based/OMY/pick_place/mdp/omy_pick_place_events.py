@@ -156,6 +156,7 @@ def randomize_object_pose(
                 torch.zeros(1, 6, device=env.device), env_ids=torch.tensor([cur_env], device=env.device)
             )
 
+
 def randomize_scene_lighting_domelight(
     env: ManagerBasedEnv,
     env_ids: torch.Tensor,
@@ -179,6 +180,7 @@ def randomize_scene_lighting_domelight(
     )
     color_attr = light_prim.GetAttribute("inputs:color")
     color_attr.Set(new_color)
+
 
 def randomize_camera_pose(
     env: ManagerBasedEnv,

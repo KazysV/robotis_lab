@@ -40,7 +40,6 @@ if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
 
-
 def task_done(env: ManagerBasedRLEnv, bottle_cfg: SceneEntityCfg, basket_cfg: SceneEntityCfg, distance_threshold: float = 0.10) -> torch.Tensor:
     """
     Success = bottle placed inside the basket.
@@ -48,7 +47,7 @@ def task_done(env: ManagerBasedRLEnv, bottle_cfg: SceneEntityCfg, basket_cfg: Sc
 
     bottle: RigidObject = env.scene[bottle_cfg.name]
     basket: RigidObject = env.scene[basket_cfg.name]
-    
+
     bottle_pos = bottle.data.root_pos_w
     basket_pos = basket.data.root_pos_w
 
@@ -60,7 +59,7 @@ def task_done(env: ManagerBasedRLEnv, bottle_cfg: SceneEntityCfg, basket_cfg: Sc
     # Assuming basket bottom is at basket_pos z and rim is ~0.1m higher
     basket_bottom = basket_pos[:, 2]
     basket_rim = basket_pos[:, 2] + 0.1  # Adjust based on actual basket height
-    
+
     vertical_ok = (bottle_pos[:, 2] > basket_bottom) & (bottle_pos[:, 2] < basket_rim)
 
     done = horizontal_ok & vertical_ok

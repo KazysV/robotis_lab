@@ -156,7 +156,6 @@ class OMYStackMimicEnv(ManagerBasedRLMimicEnv):
         if env_ids is None:
             env_ids = slice(None)
 
-
         signals = dict()
         subtask_terms = self.obs_buf["subtask_terms"]
 
