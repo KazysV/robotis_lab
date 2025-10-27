@@ -29,10 +29,10 @@ from typing import TYPE_CHECKING
 import isaaclab.utils.math as math_utils
 from isaaclab.assets import Articulation, AssetBase
 from isaaclab.managers import SceneEntityCfg
+from isaaclab.scens import Camera
 from typing import Literal
 
 from pxr import Gf
-import random
 
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedEnv
@@ -74,23 +74,6 @@ def randomize_joint_by_gaussian_offset(
     asset.set_joint_position_target(joint_pos, env_ids=env_ids)
     asset.set_joint_velocity_target(joint_vel, env_ids=env_ids)
     asset.write_joint_state_to_sim(joint_pos, joint_vel, env_ids=env_ids)
-
-
-def randomize_scene_lighting_domelight(
-    env: ManagerBasedEnv,
-    env_ids: torch.Tensor,
-    intensity_range: tuple[float, float],
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("light"),
-):
-    asset: AssetBase = env.scene[asset_cfg.name]
-    light_prim = asset.prims[0]
-
-    # Sample new light intensity
-    new_intensity = random.uniform(intensity_range[0], intensity_range[1])
-
-    # Set light intensity to light prim
-    intensity_attr = light_prim.GetAttribute("inputs:intensity")
-    intensity_attr.Set(new_intensity)
 
 
 def sample_object_poses(

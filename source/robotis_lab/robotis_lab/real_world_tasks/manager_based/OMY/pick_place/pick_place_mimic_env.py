@@ -3,7 +3,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from tkinter.messagebox import IGNORE
 import torch
 from collections.abc import Sequence
 

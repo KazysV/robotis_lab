@@ -31,8 +31,6 @@ from __future__ import annotations
 import torch
 from typing import TYPE_CHECKING
 
-import numpy as np
-
 from isaaclab.assets import RigidObject
 from isaaclab.managers import SceneEntityCfg
 

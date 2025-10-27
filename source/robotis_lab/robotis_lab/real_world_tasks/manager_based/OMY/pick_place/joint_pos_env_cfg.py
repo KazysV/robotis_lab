@@ -20,15 +20,11 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import isaaclab.sim as sim_utils
-from isaaclab.assets import RigidObjectCfg
 from isaaclab.managers import EventTermCfg as EventTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import FrameTransformerCfg
 from isaaclab.sensors.frame_transformer.frame_transformer_cfg import OffsetCfg
-from isaaclab.sim.schemas.schemas_cfg import RigidBodyPropertiesCfg
-from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
 from isaaclab.utils import configclass
-from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from isaaclab.sensors import CameraCfg
 
 from robotis_lab.real_world_tasks.manager_based.OMY.pick_place.mdp import omy_pick_place_events
@@ -42,8 +38,6 @@ from robotis_lab.assets.robots.OMY import OMY_CFG  # isort: skip
 from robotis_lab.assets.object.robotis_omy_table import OMY_TABLE_CFG
 from robotis_lab.assets.object.plastic_bottle import PLASTIC_BOTTLE_CFG
 from robotis_lab.assets.object.plastic_basket import PLASTIC_BASKET_CFG
-
-from . import mdp
 
 import math
 
