@@ -1,7 +1,8 @@
 # Robotis Lab Release Notes
 
 0.1.2 (2025-07-29)
-FFW BG2 Pick-and-Place Imitation Learning Environment
+------------------
+### FFW BG2 Pick-and-Place Imitation Learning Environment
 Built an imitation learning environment for cylindrical rod pick-and-place using the FFW BG2 robot.
 
 * Implemented the full pipeline:

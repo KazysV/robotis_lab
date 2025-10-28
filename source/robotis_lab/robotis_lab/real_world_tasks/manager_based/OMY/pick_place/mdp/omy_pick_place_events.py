@@ -29,7 +29,6 @@ from typing import TYPE_CHECKING
 import isaaclab.utils.math as math_utils
 from isaaclab.assets import Articulation, AssetBase
 from isaaclab.managers import SceneEntityCfg
-from isaaclab.scens import Camera
 from typing import Literal
 
 from pxr import Gf
