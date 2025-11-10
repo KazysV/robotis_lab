@@ -6,7 +6,7 @@
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/22.04/)
 [![License](https://img.shields.io/badge/license-Apache2.0-yellow.svg)](https://opensource.org/license/apache-2-0)
 
-![ISAAC_FFW_RL_reach_train](https://github.com/user-attachments/assets/28347b4b-f90c-4a4f-8916-621f917d86cb)
+https://github.com/user-attachments/assets/3aa8f425-264b-48f8-b6d2-245415d34534
 
 ## Overview
 
@@ -226,11 +226,11 @@ pip install lerobot==0.3.3
 
 **Sim2Sim**
 
-![Sim2Sim demonstration](https://github.com/user-attachments/assets/a6e75e80-203f-47d1-974b-d4c5435c15bc)
+https://github.com/user-attachments/assets/a6e75e80-203f-47d1-974b-d4c5435c15bc
 
 **Sim2Real**
 
-![Sim2Real demonstration](https://github.com/user-attachments/assets/8ec9d245-f8e0-4bcc-b683-0ea2864de495)
+https://github.com/user-attachments/assets/8ec9d245-f8e0-4bcc-b683-0ea2864de495
 
 ```bash
 # Teleop and record demos
