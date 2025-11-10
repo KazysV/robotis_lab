@@ -217,8 +217,8 @@ logs/rsl_rl/reach_omy/
 > [robotis_dds_python GitHub Repository](https://github.com/ROBOTIS-GIT/robotis_dds_python)
 
 ```bash
-# install lerobot
-pip install lerobot
+# install lerobot ver 0.3.3
+pip install lerobot==0.3.3
 
 ```
 
@@ -227,7 +227,7 @@ pip install lerobot
 **Sim2Sim**
 ![Sim2Sim demonstration](https://github.com/user-attachments/assets/a6e75e80-203f-47d1-974b-d4c5435c15bc)
 
-Sim2Real
+**Sim2Real**
 ![Sim2Real demonstration](https://github.com/user-attachments/assets/8ec9d245-f8e0-4bcc-b683-0ea2864de495)
 
 ```bash
