@@ -6,7 +6,7 @@
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/22.04/)
 [![License](https://img.shields.io/badge/license-Apache2.0-yellow.svg)](https://opensource.org/license/apache-2-0)
 
-https://github.com/user-attachments/assets/3aa8f425-264b-48f8-b6d2-245415d34534
+![ISAAC_FFW_RL_reach_train](https://github.com/user-attachments/assets/28347b4b-f90c-4a4f-8916-621f917d86cb)
 
 ## Overview
 
@@ -174,6 +174,11 @@ python scripts/imitation_learning/robomimic/play.py \
 >
 > This can be done using ROBOTIS’s [ai_worker repository](https://github.com/ROBOTIS-GIT/ai_worker.git).
 > 
+> For real world leader to simulator communication:
+> You must install **robotis_dds_python**, which is required to synchronize the simulated robot with the real Leader using DDS communication.  
+> [robotis_dds_python GitHub Repository](https://github.com/ROBOTIS-GIT/robotis_dds_python)
+>
+
 <details>
 <summary>Reinforcement learning</summary>
 
@@ -209,12 +214,6 @@ logs/rsl_rl/reach_omy/
 <details>
 <summary>Imitation learning</summary>
 
->
-> **Important**
-> 
-> For real world leader to simulator communication:
-> You must install **robotis_dds_python**, which is required to synchronize the simulated robot with the real Leader using DDS communication.  
-> [robotis_dds_python GitHub Repository](https://github.com/ROBOTIS-GIT/robotis_dds_python)
 
 ```bash
 # install lerobot ver 0.3.3
@@ -226,11 +225,11 @@ pip install lerobot==0.3.3
 
 **Sim2Sim**
 
-https://github.com/user-attachments/assets/a6e75e80-203f-47d1-974b-d4c5435c15bc
+![Sim2Sim demonstration](https://github.com/user-attachments/assets/a6e75e80-203f-47d1-974b-d4c5435c15bc)
 
 **Sim2Real**
 
-https://github.com/user-attachments/assets/8ec9d245-f8e0-4bcc-b683-0ea2864de495
+![Sim2Real demonstration](https://github.com/user-attachments/assets/8ec9d245-f8e0-4bcc-b683-0ea2864de495)
 
 ```bash
 # Teleop and record demos
