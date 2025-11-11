@@ -36,6 +36,7 @@ from isaaclab.utils import configclass
 from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from isaaclab.sensors import CameraCfg
 
+import isaaclab.envs.mdp as base_mdp
 from . import mdp
 
 
@@ -57,7 +58,7 @@ class ObjectTableSceneCfg(InteractiveSceneCfg):
     table = AssetBaseCfg(
         prim_path="/World/envs/env_.*/PackingTable",
         init_state=AssetBaseCfg.InitialStateCfg(
-            pos=[2.70, -0.1, 0.0],
+            pos=[0.70, -0.1, 0.0],
             rot=[-0.70710678, 0.0, 0.0, 0.70710678]
         ),
         spawn=UsdFileCfg(
@@ -127,6 +128,9 @@ class ObservationsCfg:
         gripper_pos = ObsTerm(func=mdp.gripper_pos)
         eef_pos = ObsTerm(func=mdp.ee_frame_pos)
         eef_quat = ObsTerm(func=mdp.ee_frame_quat)
+
+        object_pos = ObsTerm(func=base_mdp.root_pos_w, params={"asset_cfg": SceneEntityCfg("object")})
+        object_rot = ObsTerm(func=base_mdp.root_quat_w, params={"asset_cfg": SceneEntityCfg("object")})
 
         right_wrist_cam = ObsTerm(
             func=mdp.image,

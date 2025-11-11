@@ -31,7 +31,7 @@ from robotis_lab.simulation_tasks.manager_based.FFW_BG2.pick_place import mdp
 from robotis_lab.simulation_tasks.manager_based.FFW_BG2.pick_place.mdp import ffw_bg2_pick_place_events
 from robotis_lab.simulation_tasks.manager_based.FFW_BG2.pick_place.pick_place_env_cfg import PickPlaceEnvCfg
 
-from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_PICK_PLACE_CFG  # isort: skip
+from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_CFG  # isort: skip
 from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
 
 
@@ -40,24 +40,24 @@ class EventCfg:
     """Configuration for events."""
 
     init_ffw_bg2_pose = EventTerm(
-        func=ffw_bg2_pick_place_events.set_joint_pose_from_cfg,
+        func=ffw_bg2_pick_place_events.set_default_joint_pose,
         mode="startup",
+        params={
+            "default_pose": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.13,
+                             0.03, -2.1, -1.44, 0.43, -0.65, 0.0, 0.0, 0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0, 0.695, -0.35],
+        },
     )
 
-    init_ffw_bg2_pose = EventTerm(
-        func=ffw_bg2_pick_place_events.set_joint_pose_from_cfg,
+    randomize_object_position = EventTerm(
+        func=ffw_bg2_pick_place_events.randomize_object_pose,
         mode="reset",
+        params={
+            "pose_range": {"x": (0.5, 0.7), "y": (-0.20, 0.0), "z": (1.1413, 1.1413)},
+            "min_separation": 0.12,
+            "asset_cfgs": [SceneEntityCfg("object")],
+        },
     )
-
-    # randomize_object_position = EventTerm(
-    #     func=ffw_bg2_pick_place_events.randomize_object_pose,
-    #     mode="reset",
-    #     params={
-    #         "pose_range": {"x": (0.5, 0.7), "y": (-0.20, 0.0), "z": (1.1413, 1.1413)},
-    #         "min_separation": 0.12,
-    #         "asset_cfgs": [SceneEntityCfg("object")],
-    #     },
-    # )
 
 
 @configclass
@@ -72,7 +72,7 @@ class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
         self.events = EventCfg()
 
         # Set FFW_BG2 as robot
-        self.scene.robot = FFW_BG2_PICK_PLACE_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = FFW_BG2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
         self.scene.robot.spawn.semantic_tags = [("class", "robot")]
 
@@ -105,7 +105,7 @@ class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
             close_command_expr={"gripper_r_joint.*": 1.0},
         )
         self.scene.right_wrist_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/arm_r_link7/camera_r_bottom_screw_frame/camera_r_link/right_wrist_cam",
+            prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/right_arm/arm_r_link7/camera_r_bottom_screw_frame/camera_r_link/right_wrist_cam",
             update_period=0.0,
             height=244,
             width=244,
@@ -118,7 +118,7 @@ class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
             ),
         )
         self.scene.head_cam = CameraCfg(
-            prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/head_link2/head_cam",
+            prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/head/head_link2/head_cam",
             update_period=0.0,
             height=244,
             width=244,
@@ -140,7 +140,7 @@ class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
             visualizer_cfg=marker_cfg,
             target_frames=[
                 FrameTransformerCfg.FrameCfg(
-                    prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/arm_r_link7",
+                    prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/right_arm/arm_r_link7",
                     name="end_effector",
                     offset=OffsetCfg(
                         pos=[0.0, 0.0, 0.0],

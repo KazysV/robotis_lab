@@ -36,20 +36,26 @@ if multiprocessing.get_start_method(allow_none=True) != "spawn":
 
 def convert_joint_to_ik(ep_data: EpisodeData) -> EpisodeData:
     """Convert joint actions to IK (EEF state + gripper)."""
-    eef_state = ep_data.data["obs"]["ee_frame_state"]
-    joint_actions = ep_data.data["actions"]
+    try:
+        eef_state = ep_data.data["obs"]["ee_frame_state"]
+        joint_actions = ep_data.data["actions"]
 
-    gripper_action = joint_actions[:, -1:]
-    new_actions = torch.cat([eef_state, gripper_action], dim=1)
+        gripper_action = joint_actions[:, -1:]
+        new_actions = torch.cat([eef_state, gripper_action], dim=1)
 
-    ep_data.data["actions"] = new_actions
-    return ep_data
+        ep_data.data["actions"] = new_actions
+        return ep_data
+    except (KeyError, IndexError, TypeError) as e:
+        raise ValueError(f"Failed to convert joint to IK: {str(e)}")
 
 def convert_ik_to_joint(ep_data: EpisodeData) -> EpisodeData:
     """Convert IK actions to joint targets."""
-    joint_targets = ep_data.data["obs"]["joint_pos_target"]
-    ep_data.data["actions"] = joint_targets
-    return ep_data
+    try:
+        joint_targets = ep_data.data["obs"]["joint_pos_target"]
+        ep_data.data["actions"] = joint_targets
+        return ep_data
+    except (KeyError, IndexError, TypeError) as e:
+        raise ValueError(f"Failed to convert IK to joint: {str(e)}")
 
 ACTION_CONVERTERS = {
     "ik": convert_joint_to_ik,
@@ -71,15 +77,28 @@ def process_dataset(input_file: str, output_file: str, action_type: str) -> None
 
     try:
         episode_names = list(input_handler.get_episode_names())
+        skipped_episodes = []
+        
         for name in tqdm(episode_names, desc="Processing episodes"):
-            ep_data = input_handler.load_episode(name, device="cpu")
+            try:
+                ep_data = input_handler.load_episode(name, device="cpu")
 
-            if ep_data.success is not None and not ep_data.success:
+                if ep_data.success is not None and not ep_data.success:
+                    continue
+
+                processed = deepcopy(ep_data)
+                processed = converter(processed)
+                output_handler.write_episode(processed)
+                
+            except Exception as e:
+                skipped_episodes.append((name, str(e)))
+                print(f"\nWarning: Skipping episode '{name}' due to error: {str(e)}")
                 continue
-
-            processed = deepcopy(ep_data)
-            processed = converter(processed)
-            output_handler.write_episode(processed)
+        
+        if skipped_episodes:
+            print(f"\n\nSummary: Skipped {len(skipped_episodes)} episode(s) due to errors:")
+            for ep_name, error_msg in skipped_episodes:
+                print(f"  - {ep_name}: {error_msg}")
 
     finally:
         input_handler.close()

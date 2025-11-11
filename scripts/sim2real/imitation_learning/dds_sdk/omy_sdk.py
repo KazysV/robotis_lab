@@ -44,6 +44,9 @@ class OMYSdk:
         self._reset_state = False
         self._additional_callbacks = {}
         self.lock = threading.Lock()  # Protect shared state
+        
+        # Initialize current joint state - will be updated only when commands are received
+        self.current_joint_state = {}
 
         # Define joint names
         self.joint_names = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "rh_r1_joint"]
@@ -222,11 +225,31 @@ class OMYSdk:
         return state
 
     def _get_device_state(self):
-        """Return latest joint positions."""
+        """Return latest joint positions, starting with current robot state and updating with received commands."""
         with self.lock:
-            if self.joint_trajectory_cmd is None:
-                return {name: 0.0 for name in self.joint_names}
-            return dict(zip(self.joint_names, self.joint_trajectory_cmd))
+            # Start with current robot joint positions
+            obs_joint_name = self.env.scene["robot"].data.joint_names
+            all_positions = self.env.scene["robot"].data.joint_pos.squeeze(0).tolist()
+            
+            # Flatten nested lists if necessary
+            if isinstance(all_positions[0], list):
+                all_positions = [p for sub in all_positions for p in sub]
+
+            # Build joint state from current robot state
+            joint_state = {}
+            for name in self.joint_names:
+                if name in obs_joint_name:
+                    idx = obs_joint_name.index(name)
+                    joint_state[name] = all_positions[idx]
+                else:
+                    joint_state[name] = 0.0  # Fallback only if joint not found in robot
+            
+            # Update with received commands if available
+            if self.joint_trajectory_cmd:
+                cmd_dict = dict(zip(self.joint_names, self.joint_trajectory_cmd))
+                joint_state.update(cmd_dict)
+            
+            return joint_state
 
     def get_action(self):
         """Return action tensor for robot control."""

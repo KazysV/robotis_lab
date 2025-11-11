@@ -227,13 +227,19 @@ def main():
             # apply actions
             else:
                 if isinstance(actions, dict):
-                    print(f"Debug: Received actions as dict with keys: {list(actions.keys())}")
-                if actions.ndim == 1:
-                    actions = actions.unsqueeze(0)
-                if not start_record_state:
-                    print("Start Recording!!!")
-                    start_record_state = True
-                env.step(actions)
+                    # Handle dictionary actions (like reset)
+                    if "reset" in actions:
+                        # This is a reset action, don't step the environment
+                        env.render()
+                        continue
+                else:
+                    # Handle tensor actions
+                    if actions.ndim == 1:
+                        actions = actions.unsqueeze(0)
+                    if not start_record_state:
+                        print("Start Recording!!!")
+                        start_record_state = True
+                    env.step(actions)
             if rate_limiter:
                 rate_limiter.sleep(env)
 

@@ -51,17 +51,17 @@ OMY_CFG = ArticulationCfg(
             velocity_limit_sim=6.0,
             effort_limit_sim=100.0,
             stiffness=400.0,
-            damping=50.0,
+            damping=20.0,
         ),
         "DY_70": ImplicitActuatorCfg(
             joint_names_expr=["joint[3-6]"],
             velocity_limit_sim=6.0,
             effort_limit_sim=80.0,
-            stiffness=300.0,
-            damping=40.0,
+            stiffness=400.0,
+            damping=20.0,
         ),
         "gripper": ImplicitActuatorCfg(
-            joint_names_expr=["rh_r1_joint"],
+            joint_names_expr=["rh_r1_joint", "rh_r2", "rh_l1", "rh_l2"],
             velocity_limit_sim=6.0,
             effort_limit_sim=30.0,
             stiffness=20.0,
@@ -69,50 +69,12 @@ OMY_CFG = ArticulationCfg(
         ),
     },
 )
-"""Configuration of OMY arm using implicit actuator models."""
 
+"""Configuration of OMY arm using implicit actuator models."""
 OMY_OFF_SELF_COLLISION_CFG = OMY_CFG.replace(
     spawn=OMY_CFG.spawn.replace(
         articulation_props=OMY_CFG.spawn.articulation_props.replace(
             enabled_self_collisions=False,
         )
     )
-)
-
-OMY_HIGH_PD_CFG = OMY_CFG.replace(
-    spawn=OMY_CFG.spawn,
-    init_state=ArticulationCfg.InitialStateCfg(
-        joint_pos={
-            "joint1": 0.0,
-            "joint2": -0.3,
-            "joint3": 1.7,
-            "joint4": -0.2,
-            "joint5": 1.53,
-            "joint6": 0.0,
-            "rh_r1_joint": 0.0,
-        }
-    ),
-    actuators={
-        "DY_80_LIFT": ImplicitActuatorCfg(
-            joint_names_expr=["joint[1-3]"],
-            velocity_limit_sim=100.0,
-            effort_limit_sim=1000.0,
-            stiffness=400.0,
-            damping=80.0,
-        ),
-        "DY_70_LIFT": ImplicitActuatorCfg(
-            joint_names_expr=["joint[4-6]"],
-            velocity_limit_sim=100.0,
-            effort_limit_sim=1000.0,
-            stiffness=400.0,
-            damping=80,
-        ),
-        "hand": ImplicitActuatorCfg(
-            joint_names_expr=["rh_r1_joint"],
-            velocity_limit_sim=6.0,
-            effort_limit_sim=1000.0,
-            stiffness=1000000.0,
-            damping=100.0,
-        ),
-    }
 )

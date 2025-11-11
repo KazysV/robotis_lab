@@ -47,6 +47,6 @@ class OMYCubeStackEnvCfg(joint_pos_env_cfg.OMYCubeStackEnvCfg):
             joint_names=["joint[1-6]"],
             body_name="link6",
             controller=DifferentialIKControllerCfg(command_type="pose", use_relative_mode=True, ik_method="dls"),
-            scale=0.1,
+            scale=0.15,
             body_offset=DifferentialInverseKinematicsActionCfg.OffsetCfg(pos=[0.0, 0.0, 0.0]),
         )
