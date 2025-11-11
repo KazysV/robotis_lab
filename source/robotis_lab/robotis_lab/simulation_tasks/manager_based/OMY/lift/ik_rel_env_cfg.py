@@ -38,7 +38,6 @@ class OMYCubeLiftEnvCfg(joint_pos_env_cfg.OMYCubeLiftEnvCfg):
         super().__post_init__()
 
         # Set OMY as robot
-        # We switch here to a stiffer PD controller for IK tracking to be better.
         self.scene.robot = OMY_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
         # Set actions for the specific robot type (OMY)
