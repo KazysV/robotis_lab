@@ -190,19 +190,14 @@ python scripts/imitation_learning/robomimic/play.py \
 
 https://github.com/user-attachments/assets/6c27bdb1-3a6b-4686-a546-8f14f01e4abe
 
-
->
-> Prerequisites
-> - A trained policy (under logs/rsl_rl/reach_omy/<TIMESTAMP>).
-> - ROS 2 Jazzy installed and sourced.
-> - Robot hardware must be ready and controllable via the joint trajectory interface.
->
-
 Run Sim2Real Reach Policy on OMY
 
 ```bash
 # Train
 python scripts/reinforcement_learning/rsl_rl/train.py --task RobotisLab-Reach-OMY-v0 --num_envs=512 --headless
+
+# Play (You must run rsl_rl play in order to generate the policy file.)
+python scripts/reinforcement_learning/rsl_rl/play.py --task RobotisLab-Reach-OMY-v0 --num_envs=16
 
 # Sim2Real
 python scripts/sim2real/reinforcement_learning/inference/OMY/reach/run_omy_reach.py --model_dir=<2025-07-10_08-47-09>
