@@ -1,4 +1,13 @@
-# Robotis Lab Release Notes
+# Changelog for package robotis_lab
+
+0.2.1 (2025-11-13)
+------------------
+### OMY Reach Sim2Real Reinforcement Learning Pipeline
+* Refactored OMY reach policy inference code to use DDS for joint state handling and trajectory publishing
+* Removed ROS 2 dependency by integrating robotis_dds_python library for direct communication
+
+### Documentation Update
+* Renamed ReleaseNote.md to CHANGELOG.rst for better standardization and readability.
 
 0.2.0 (2025-10-28)
 ------------------
