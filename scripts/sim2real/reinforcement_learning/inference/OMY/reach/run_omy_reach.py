@@ -44,6 +44,8 @@ class OMYReachPolicy(PolicyExecutor):
     """DDS-based policy executor for executing a reach policy on the OMY robot."""
 
     def __init__(self, model_dir: str):
+        super().__init__()
+
         self.cfg = ReachEnvConfig(model_dir=model_dir)
         self.load_policy_model(self.cfg.policy_model_path)
         self.load_policy_yaml(self.cfg.policy_env_path)
@@ -95,8 +97,10 @@ class OMYReachPolicy(PolicyExecutor):
         """Continuously read joint state messages from DDS in a separate thread."""
         try:
             while self.running:
+                has_message = False
                 for msg in self.joint_state_reader.take_iter():
                     if msg:
+                        has_message = True
                         with self.lock:
                             name_to_index = {name: i for i, name in enumerate(msg.name)}
                             for i, name in enumerate(self.joint_names):
@@ -110,12 +114,16 @@ class OMYReachPolicy(PolicyExecutor):
                                 else:
                                     print(f"Warning: Joint '{name}' not found in JointState message.")
                             self.has_joint_data = True
+                
+                # Prevent CPU spinning when no messages are available
+                if not has_message:
+                    time.sleep(0.001)  # 1ms delay to reduce CPU usage
         except Exception as e:
             print("Subscriber thread exception:", e)
         finally:
             try:
                 self.joint_state_reader.Close()
-            except:
+            except Exception:
                 pass
             print("Joint state subscriber closed")
 
@@ -132,9 +140,10 @@ class OMYReachPolicy(PolicyExecutor):
                 phase = self.iteration % (2 * command_interval)
 
                 if phase == 0:
-                    self.target_command = self.cfg.sample_random_pose()
-                    self.broadcast_target_pose_tf()
-                    print(f"New target command: {np.round(self.target_command, 4)}")
+                    with self.lock:
+                        self.target_command = self.cfg.sample_random_pose()
+                        self.broadcast_target_pose_tf()
+                        print(f"New target command: {np.round(self.target_command, 4)}")
 
                 if phase < command_interval:
                     joint_trajectory_msg = self.create_trajectory_command(self.default_pos)
@@ -156,8 +165,6 @@ class OMYReachPolicy(PolicyExecutor):
 
     def create_trajectory_command(self, joint_positions: np.ndarray) -> JointTrajectory_:
         """Creates a JointTrajectory_ message from joint positions."""
-        now = datetime.now()
-
         point = JointTrajectoryPoint_(
             positions=joint_positions.tolist(),
             velocities=[],
@@ -230,7 +237,8 @@ class OMYReachPolicy(PolicyExecutor):
         return joint_positions
 
     def shutdown(self):
-        """Close DDS connections."""
+        """Gracefully shut down the policy executor by stopping threads and closing DDS connections."""
+        self.running = False
         try:
             self.joint_state_reader.Close()
             self.joint_trajectory_writer.Close()
