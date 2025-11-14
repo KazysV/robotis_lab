@@ -1,4 +1,19 @@
-# Robotis Lab Release Notes
+# Changelog for package robotis_lab
+
+0.2.2 (2025-12-05)
+------------------
+### Fixed
+* Resolved a problem where the initial pose for the pick-and-place task using the FFW_BG2 model was not being applied correctly.
+* Addressed an issue where the gripper could not grasp objects due to the mimic joint configuration, and updated the gripper setup accordingly.
+
+0.2.1 (2025-11-13)
+------------------
+### OMY Reach Sim2Real Reinforcement Learning Pipeline
+* Refactored OMY reach policy inference code to use DDS for joint state handling and trajectory publishing
+* Removed ROS 2 dependency by integrating robotis_dds_python library for direct communication
+
+### Documentation Update
+* Renamed ReleaseNote.md to CHANGELOG.rst for better standardization and readability.
 
 0.2.0 (2025-10-28)
 ------------------
