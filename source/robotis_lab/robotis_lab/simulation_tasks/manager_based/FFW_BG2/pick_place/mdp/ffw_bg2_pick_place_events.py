@@ -49,7 +49,7 @@ def set_default_joint_pose(
     asset: Articulation = env.scene[asset_cfg.name]
     
     # Create properly ordered tensor from joint name mapping
-    default_pose_tensor = create_joint_position_mapping(asset.joint_names, joint_positions)
+    default_pose_tensor = create_joint_position_mapping(asset.data.joint_names, joint_positions)
     default_pose_tensor = default_pose_tensor.to(device=env.device)
     
     # Ensure correct shape for multiple environments
