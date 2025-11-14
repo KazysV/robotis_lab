@@ -42,7 +42,7 @@ def create_joint_position_mapping(joint_names: list[str], desired_values: dict[s
 def set_default_joint_pose(
     env: ManagerBasedEnv,
     env_ids: torch.Tensor,
-    joint_positions: dict[str, float],  # Change to dict instead of list
+    joint_positions: dict[str, float],
     asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
 ):
     """Set the default joint positions for the robot using joint names."""
