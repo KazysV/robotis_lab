@@ -34,38 +34,35 @@ if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedEnv
 
 
+def create_joint_position_mapping(joint_names: list[str], desired_values: dict[str, float]) -> torch.Tensor:
+    """Create a tensor with joint positions in the correct order based on joint names."""
+    joint_positions = [desired_values.get(joint_name, 0.0) for joint_name in joint_names]
+    return torch.tensor(joint_positions, dtype=torch.float32)
+
+
 def set_default_joint_pose(
     env: ManagerBasedEnv,
     env_ids: torch.Tensor,
-    default_pose: torch.Tensor,
+    joint_positions: dict[str, float],
     asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
 ):
-    # Set the default pose for robots in all envs
-    asset = env.scene[asset_cfg.name]
-    asset.data.default_joint_pos = torch.tensor(default_pose, device=env.device).repeat(env.num_envs, 1)
+    """Set the default joint positions for the robot using joint names."""
+    asset: Articulation = env.scene[asset_cfg.name]
 
+    # Create properly ordered tensor from joint name mapping
+    default_pose_tensor = create_joint_position_mapping(asset.data.joint_names, joint_positions)
+    default_pose_tensor = default_pose_tensor.to(device=env.device)
 
-def set_joint_pose_from_cfg(
-    env: ManagerBasedEnv,
-    env_ids: torch.Tensor,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
-):
-    asset = env.scene[asset_cfg.name]
-    joint_names = asset.data.joint_names
-    cfg_joint_pos = asset.cfg.init_state.joint_pos
+    # Ensure correct shape for multiple environments
+    if default_pose_tensor.dim() == 1:
+        default_pose_tensor = default_pose_tensor.unsqueeze(0).repeat(len(env_ids), 1)
 
-    default_pose = [cfg_joint_pos[name] for name in joint_names]
-    joint_pos = torch.tensor(default_pose, device=env.device).repeat(env.num_envs, 1)
-    joint_vel = torch.zeros_like(joint_pos)
+    # Set default joint positions for the asset
+    asset.data.default_joint_pos[env_ids] = default_pose_tensor
 
-    asset.data.default_joint_pos = joint_pos
-
-    joint_pos_per_env = joint_pos[env_ids]
-    joint_vel_per_env = joint_vel[env_ids]
-
-    asset.set_joint_position_target(joint_pos_per_env, env_ids=env_ids)
-    asset.set_joint_velocity_target(joint_vel_per_env, env_ids=env_ids)
-    asset.write_joint_state_to_sim(joint_pos_per_env, joint_vel_per_env, env_ids=env_ids)
+    # Set joint positions
+    asset.set_joint_position_target(default_pose_tensor, env_ids=env_ids)
+    asset.write_joint_state_to_sim(default_pose_tensor, torch.zeros_like(default_pose_tensor), env_ids=env_ids)
 
 
 def randomize_joint_by_gaussian_offset(

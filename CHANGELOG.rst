@@ -1,5 +1,12 @@
 # Changelog for package robotis_lab
 
+0.2.2 (2025-12-05)
+------------------
+### Fixed
+* Resolved a problem where the initial pose for the pick-and-place task using the FFW_BG2 model was not being applied correctly.
+* Addressed an issue where the gripper could not grasp objects due to the mimic joint configuration, and updated the gripper setup accordingly.
+* Contributors: Taehyeong Kim
+
 0.2.1 (2025-11-13)
 ------------------
 ### OMY Reach Sim2Real Reinforcement Learning Pipeline

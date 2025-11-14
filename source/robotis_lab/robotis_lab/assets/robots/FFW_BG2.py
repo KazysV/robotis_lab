@@ -14,6 +14,8 @@
 #
 # Author: Taehyeong Kim
 
+from copy import deepcopy
+
 from isaaclab.sim import UsdFileCfg, RigidBodyPropertiesCfg, ArticulationRootPropertiesCfg
 from isaaclab.assets.articulation import ArticulationCfg
 from isaaclab.actuators import ImplicitActuatorCfg
@@ -96,3 +98,6 @@ FFW_BG2_CFG = ArticulationCfg(
         ),
     }
 )
+
+FFW_BG2_WITHOUT_MIMIC_CFG = deepcopy(FFW_BG2_CFG)
+FFW_BG2_WITHOUT_MIMIC_CFG.spawn.usd_path = f'{ROBOTIS_LAB_ASSETS_DATA_DIR}/robots/FFW/FFW_BG2_without_mimic.usd'

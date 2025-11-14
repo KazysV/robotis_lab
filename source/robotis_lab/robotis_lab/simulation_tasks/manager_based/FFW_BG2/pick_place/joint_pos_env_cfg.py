@@ -31,7 +31,7 @@ from robotis_lab.simulation_tasks.manager_based.FFW_BG2.pick_place import mdp
 from robotis_lab.simulation_tasks.manager_based.FFW_BG2.pick_place.mdp import ffw_bg2_pick_place_events
 from robotis_lab.simulation_tasks.manager_based.FFW_BG2.pick_place.pick_place_env_cfg import PickPlaceEnvCfg
 
-from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_CFG  # isort: skip
+from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_WITHOUT_MIMIC_CFG  # isort: skip
 from isaaclab.markers.config import FRAME_MARKER_CFG  # isort: skip
 
 
@@ -41,11 +41,18 @@ class EventCfg:
 
     init_ffw_bg2_pose = EventTerm(
         func=ffw_bg2_pick_place_events.set_default_joint_pose,
-        mode="startup",
+        mode="reset",
         params={
-            "default_pose": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.13,
-                             0.03, -2.1, -1.44, 0.43, -0.65, 0.0, 0.0, 0.0, 0.0, 0.0,
-                             0.0, 0.0, 0.0, 0.695, -0.35],
+            "joint_positions": {
+                "arm_r_joint2": -1.13,
+                "arm_r_joint3": 0.03,
+                "arm_r_joint4": -2.1,
+                "arm_r_joint5": -1.44,
+                "arm_r_joint6": 0.43,
+                "arm_r_joint7": -0.65,
+                "head_joint1": 0.695,
+                "head_joint2": -0.35,
+            },
         },
     )
 
@@ -72,7 +79,7 @@ class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
         self.events = EventCfg()
 
         # Set FFW_BG2 as robot
-        self.scene.robot = FFW_BG2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = FFW_BG2_WITHOUT_MIMIC_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
         self.scene.robot.spawn.semantic_tags = [("class", "robot")]
 
