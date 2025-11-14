@@ -39,6 +39,7 @@ def create_joint_position_mapping(joint_names: list[str], desired_values: dict[s
     joint_positions = [desired_values.get(joint_name, 0.0) for joint_name in joint_names]
     return torch.tensor(joint_positions, dtype=torch.float32)
 
+
 def set_default_joint_pose(
     env: ManagerBasedEnv,
     env_ids: torch.Tensor,
@@ -47,21 +48,22 @@ def set_default_joint_pose(
 ):
     """Set the default joint positions for the robot using joint names."""
     asset: Articulation = env.scene[asset_cfg.name]
-    
+
     # Create properly ordered tensor from joint name mapping
     default_pose_tensor = create_joint_position_mapping(asset.data.joint_names, joint_positions)
     default_pose_tensor = default_pose_tensor.to(device=env.device)
-    
+
     # Ensure correct shape for multiple environments
     if default_pose_tensor.dim() == 1:
         default_pose_tensor = default_pose_tensor.unsqueeze(0).repeat(len(env_ids), 1)
-    
+
     # Set default joint positions for the asset
     asset.data.default_joint_pos[env_ids] = default_pose_tensor
 
     # Set joint positions
     asset.set_joint_position_target(default_pose_tensor, env_ids=env_ids)
     asset.write_joint_state_to_sim(default_pose_tensor, torch.zeros_like(default_pose_tensor), env_ids=env_ids)
+
 
 def randomize_joint_by_gaussian_offset(
     env: ManagerBasedEnv,
