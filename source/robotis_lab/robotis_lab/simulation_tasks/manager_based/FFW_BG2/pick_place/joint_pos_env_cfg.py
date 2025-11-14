@@ -41,11 +41,18 @@ class EventCfg:
 
     init_ffw_bg2_pose = EventTerm(
         func=ffw_bg2_pick_place_events.set_default_joint_pose,
-        mode="startup",
+        mode="reset",
         params={
-            "default_pose": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.13,
-                             0.03, -2.1, -1.44, 0.43, -0.65, 0.0, 0.0, 0.0, 0.0, 0.0,
-                             0.0, 0.0, 0.0, 0.695, -0.35],
+            "joint_positions": {
+                "arm_r_joint2": -1.13,
+                "arm_r_joint3": 0.03,
+                "arm_r_joint4": -2.1,
+                "arm_r_joint5": -1.44,
+                "arm_r_joint6": 0.43,
+                "arm_r_joint7": -0.65,
+                "head_joint1": 0.695,
+                "head_joint2": -0.35,
+            },
         },
     )
 
@@ -100,9 +107,9 @@ class PickPlaceFFWBG2EnvCfg(PickPlaceEnvCfg):
         )
         self.actions.gripper_action = mdp.BinaryJointPositionActionCfg(
             asset_name="robot",
-            joint_names=["gripper_r_joint[1-4]"],
-            open_command_expr={"gripper_r_joint.*": 0.0},
-            close_command_expr={"gripper_r_joint.*": 1.0},
+            joint_names=["gripper_r_joint1"],
+            open_command_expr={"gripper_r_joint1": 0.0},
+            close_command_expr={"gripper_r_joint1": 1.0},
         )
         self.scene.right_wrist_cam = CameraCfg(
             prim_path="{ENV_REGEX_NS}/Robot/ffw_bg2_follower/right_arm/arm_r_link7/camera_r_bottom_screw_frame/camera_r_link/right_wrist_cam",
