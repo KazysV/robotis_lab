@@ -25,7 +25,7 @@ import robotis_lab.simulation_tasks.manager_based.FFW_BG2.reach.mdp as mdp
 from robotis_lab.simulation_tasks.manager_based.FFW_BG2.reach.reach_env_cfg import ReachEnvCfg
 from isaaclab.managers import SceneEntityCfg
 
-from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_CFG  # isort: skip
+from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_CFG_WITHOUT_MIMIC  # isort: skip
 
 
 @configclass
@@ -34,7 +34,7 @@ class FFWBG2ReachEnvCfg(ReachEnvCfg):
         super().__post_init__()
 
         # Assign robot asset
-        self.scene.robot = FFW_BG2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = FFW_BG2_CFG_WITHOUT_MIMIC.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
         # Joint reset configuration
         self.events.reset_robot_joints.params["position_range"] = (0.0, 0.0)

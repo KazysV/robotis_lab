@@ -28,7 +28,7 @@ from . import joint_pos_env_cfg
 ##
 # Pre-defined configs
 ##
-from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_CFG  # isort: skip
+from robotis_lab.assets.robots.FFW_BG2 import FFW_BG2_CFG_WITHOUT_MIMIC  # isort: skip
 
 
 @configclass
@@ -38,7 +38,7 @@ class PickPlaceFFWBG2EnvCfg(joint_pos_env_cfg.PickPlaceFFWBG2EnvCfg):
         super().__post_init__()
 
         # Set FFW BG2 as robot
-        self.scene.robot = FFW_BG2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = FFW_BG2_CFG_WITHOUT_MIMIC.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
         # Set actions for the specific robot type (FFW BG2)
         self.actions.arm_action = DifferentialInverseKinematicsActionCfg(
