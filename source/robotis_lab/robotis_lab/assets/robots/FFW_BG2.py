@@ -99,5 +99,5 @@ FFW_BG2_CFG = ArticulationCfg(
     }
 )
 
-FFW_BG2_CFG_WITHOUT_MIMIC = deepcopy(FFW_BG2_CFG)
-FFW_BG2_CFG_WITHOUT_MIMIC.spawn.usd_path = f'{ROBOTIS_LAB_ASSETS_DATA_DIR}/robots/FFW/FFW_BG2_without_mimic.usd'
+FFW_BG2_WITHOUT_MIMIC_CFG = deepcopy(FFW_BG2_CFG)
+FFW_BG2_WITHOUT_MIMIC_CFG.spawn.usd_path = f'{ROBOTIS_LAB_ASSETS_DATA_DIR}/robots/FFW/FFW_BG2_without_mimic.usd'
